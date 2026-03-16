@@ -136,7 +136,7 @@ function addRow(rowNum){
         deltaBox.className = `deltaBox`;
         deltaBox.id = `${boxID}DeltaBox${rowNum}`
         // change offset to match it with the result boxes
-        let topOffset = 348; // initial value
+        let topOffset = 318; // initial value
         topOffset += (1*86); // moves down 86 pixels each time
         topOffset = `${topOffset}px`
         deltaBox.style.top = topOffset;
