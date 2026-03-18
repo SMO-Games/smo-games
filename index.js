@@ -114,7 +114,7 @@ function getAnswer(correct_runner){
                     // update runner info text to answer
                     runnerInfoText.textContent = `Country: ${value.country[1]} [${value.country[2]}]\n
                                                 Console: ${answer.console}\n
-                                                PB: ${convertSeconds(answer.pb)}\n
+                                                Any% PB: ${convertSeconds(answer.pb)}\n
                                                 Most Recent Run: ${answer.most_recent_run}\n
                                                 Best MB Placement: ${answer.best_mb_placement}\n
                                                 Best CE Placement: ${answer.best_ce_placement}`
