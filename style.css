@@ -1,8 +1,8 @@
 body{
     background-color: rgb(56, 64, 71);
-    font-family:Verdana, Geneva, Tahoma, sans-serif
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    overflow-wrap: anywhere;
 }
-
 .center{
     justify-content: center;
     align-items: center;
@@ -10,11 +10,22 @@ body{
 
 dialog{
     padding: 0;
+    background-color: rgb(82, 6, 153);
+    color: white;
 }
 dialog .wrapper{
     padding: 16px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
+.gameResultsBtn{
+    font-size: 1.5em;
+    font-weight: bold;
+    border: 2px solid black;
+    border-radius: 5px;
+}
 .categoryBox{
     font-size: 1.1rem;
     color: white;
@@ -87,6 +98,17 @@ dialog .wrapper{
     font-size: 1.2rem;
     border-radius: 5px;
     margin-left: 10px;
+}
+#resultText{
+    font-size: 1.3rem;
+}
+#runnerNameText{
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+#runnerInfoText{
+    font-size: 1.2rem;
+    white-space: pre-line;
 }
 #runnerList{
     color: white;

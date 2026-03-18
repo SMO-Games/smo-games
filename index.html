@@ -2,20 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Guess the SMO Runner</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
     <dialog id="gameOverDialogue">
         <div class="wrapper">
-            <h1>Results (temp)</h1>
-            <button id="copyResultsBtn" onclick=copyResults()>Copy</button>
-            <button type="button" id="exitDialogue" onclick=exitGameOverDialogue()>Exit</button>
+            <h1>Guess the SMO Runner</h1>
+            <h2>Thanks for playing!</h2>
+            <p id="resultText"></p>
+            <p id="runnerNameText"></p>
+            <p id="runnerInfoText"></p>
+            <button id="copyResultsBtn" class="gameResultsBtn" onclick=copyResults()>Share  <i class="fa-regular fa-copy"></i></button>
+            <p>a</p>
+            <button type="button" id="exitDialogue" class="gameResultsBtn" onclick=exitGameOverDialogue()>Exit</button>
         </div>
     </dialog>
 
@@ -34,5 +39,6 @@
     <br id="preRunners">
     
     <script src="index.js"></script>
+    <script src="https://kit.fontawesome.com/eb7f00f391.js" crossorigin="anonymous"></script>
 </body>
 </html>

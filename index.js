@@ -109,12 +109,19 @@ function getAnswer(correct_runner){
                     answer.most_recent_run = value.most_recent_run;
                     answer.best_mb_placement = value.best_mb_placement[0];
                     answer.best_ce_placement = value.best_ce_placement[0];
-                    
+
+
+                    // update runner info text to answer
+                    runnerInfoText.textContent = `Country: ${value.country[1]} [${value.country[2]}]\n
+                                                Console: ${answer.console}\n
+                                                PB: ${convertSeconds(answer.pb)}\n
+                                                Most Recent Run: ${answer.most_recent_run}\n
+                                                Best MB Placement: ${answer.best_mb_placement}\n
+                                                Best CE Placement: ${answer.best_ce_placement}`
                 }
             }
         })
         .catch(error => console.error(error));
-
     return answer;
 }
 
@@ -189,6 +196,10 @@ let totalRunners = 0;
 // for handling pop up
 let dialogue = document.getElementById("gameOverDialogue");
 let dialogueWrapper = document.querySelector(".wrapper");
+// for changing pop up text
+let resultText = document.getElementById("resultText");
+let runnerNameText = document.getElementById("runnerNameText");
+let runnerInfoText = document.getElementById("runnerInfoText");
 // for handling copying results
 let copyBtn = document.getElementById("copyResultsBtn");
 let gameResults = "";
@@ -227,19 +238,12 @@ document.getElementById("runnerSubmit").onclick = function(){
 
                     guesses++;
 
+                    // check if reached max guesses
                     let guessCounter = document.getElementById("guessCounter");
+                    guessCounter.textContent = `Guesses: ${guesses}/${allowedGuesses}`;
                     if(guesses === allowedGuesses){
-                        guessCounter.textContent = `Guesses: ${guesses}/${allowedGuesses}`;
-                        errorMessage.textContent = "Max guesses";
-
-                        document.getElementById("runnerInputBox").disabled = true;
-                        dialogue = document.getElementById("gameOverDialogue");
+                        document.getElementById("runnerInputBox").disabled = true; // prevent further guesses
                         dialogue.showModal();
-
-                        //return
-                    }
-                    else{
-                        guessCounter.textContent = `Guesses: ${guesses}/${allowedGuesses}`;
                     }
 
                     // increase row count and add the row
@@ -247,19 +251,26 @@ document.getElementById("runnerSubmit").onclick = function(){
                     addRow(row);
                     isValidRunner = true;
 
-                    // compare names
+                    // compare names (check if guess is correct)
                     let runnerLabelBox = document.getElementById(`runnerLabelBox${row}`);
                     let runnerResultBox = document.getElementById(`runnerResultBox${row}`);
                     if(value.name === answer.name){
                         runnerLabelBox.textContent = runnerLabelBox.textContent + " ✅";
                         runnerResultBox.style.backgroundColor = 'green';
-                        document.getElementById("runnerInputBox").disabled = true;
-                        dialogue = document.getElementById("gameOverDialogue");
-                        dialogue.showModal();
+                        // end game
+                        document.getElementById("runnerInputBox").disabled = true; // prevent further guesses
+                        dialogue.showModal(); // show dialogue
+                        resultText.textContent = `You successfully guessed it was ${answer.name} in ${guesses} guesses!`
                     }
                     else{
                         runnerLabelBox.textContent = runnerLabelBox.textContent + " ❌";
                         runnerResultBox.style.backgroundColor = 'red';
+                        // if max guesses and still wrong, set guesses to X
+                        if(guesses === allowedGuesses){
+                            guesses = "X";
+                            resultText.textContent = `You didn't get the answer right ☹️ The runner was:`
+                            runnerNameText.textContent =  `${answer.name}`
+                        }
                     }
 
 
@@ -452,7 +463,6 @@ document.getElementById("runnerSubmit").onclick = function(){
                     document.getElementById(`bestMBResultBox${row}`).textContent = value.best_mb_placement[0];
                     document.getElementById(`bestCEResultBox${row}`).textContent = value.best_ce_placement[0];
 
-
                     gameResults += "\n"
 
                     break
@@ -497,12 +507,16 @@ function exitGameOverDialogue(){
     dialogue.close();
 };
 
+
+// lets you close the dialogue by clicking anywhere outside of it
 dialogue.addEventListener("click", (e) => {
     if(!dialogueWrapper.contains(e.target)){
         dialogue.close();
     }
 });
 
+
+// copy results to clipboard when button clicked
 function copyResults(){
     let formattedResults = `Guess the SMO Runner [${guesses}/${allowedGuesses}]\n${gameResults}TESTING ONLY - Answer: ${answer.name}`;
     navigator.clipboard.writeText(formattedResults).then(() => {
