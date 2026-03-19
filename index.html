@@ -24,14 +24,15 @@
         </div>
     </dialog>
 
-    <p class="center" id="runnerList">placeholder</p>
-
     <p id="errorMessage" class="center infoParagraphs"></p>
     <p id="guessCounter" class="center infoParagraphs">Make a guess!</p>
 
-    <div class="center" id="runnerInput">
-        <input id="runnerInputBox" autocomplete="off" type="text">
-        <button type="submit" id="runnerSubmit">Submit</button>
+    <div class="center">
+        <div class="center" id="runnerInput">
+            <input id="runnerInputBox" autocomplete="off" list="runners" type="text">
+            <datalist id="runners" class="list"></datalist>
+            <button type="submit" id="runnerSubmit">Submit</button>
+        </div>
     </div>
 
     <br><br>

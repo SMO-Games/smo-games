@@ -12,7 +12,7 @@ function getRunners(){
             values.forEach(value => {
                 names.push(value.name);
             })
-            names.sort();
+            names.sort((a, b) => a.localeCompare(b));
             resolve(names);    
     })
     })
@@ -496,7 +496,7 @@ getRunners().then(runners => {
             runnerTextLine = ""
         }
     })
-    document.getElementById("runnerList").textContent = runnerText;
+    //document.getElementById("runnerList").textContent = runnerText;
 
     let answer = runners[Math.floor(Math.random()*runners.length)];
     getAnswer(answer);
@@ -523,3 +523,16 @@ function copyResults(){
         console.log("Text copied")
     })
 };
+
+
+// add all runners to datalist
+getRunners().then(runners => {
+    let list = document.getElementById("runners");
+
+    for (let i = 0; i < runners.length; i++) {
+        let option = document.createElement("option");
+        let text = document.createTextNode(runners[i]);
+        option.appendChild(text);
+        list.appendChild(option);
+    }
+})

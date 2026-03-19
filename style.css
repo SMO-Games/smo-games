@@ -110,8 +110,3 @@ dialog .wrapper{
     font-size: 1.2rem;
     white-space: pre-line;
 }
-#runnerList{
-    color: white;
-    max-width: 100%;
-    margin-bottom: 50px;
-}
