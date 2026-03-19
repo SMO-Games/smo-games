@@ -117,7 +117,7 @@ function getAnswer(correct_runner){
                                                 Any% PB: ${convertSeconds(answer.pb)}\n
                                                 Most Recent Run: ${answer.most_recent_run}\n
                                                 Best MB Placement: ${answer.best_mb_placement}\n
-                                                Best CE Placement: ${answer.best_ce_placement}`
+                                                Best CE Placement: ${answer.best_ce_placement}`;
                 }
             }
         })
@@ -190,6 +190,9 @@ let row = 0; // current row
 let inputs = []; // all previous inputs
 let guesses = 0; // current number of guesses already submitted
 let allowedGuesses = 6;
+// handles input
+let runnerInputBox = document.getElementById("runnerInputBox");
+let runnerSubmitBtn = document.getElementById("runnerSubmit");
 // for validating runner input
 let isValidRunner = false;
 // for handling pop up
@@ -206,8 +209,8 @@ let gameResults = "";
 
 // fills rows per submitted user
 document.getElementById("runnerSubmit").onclick = function(){
-    let runner = document.getElementById("runnerInputBox").value; // gets value from input
-    document.getElementById("runnerInputBox").value = ""; // empty input box
+    let runner = runnerInputBox.value; // gets value from input
+    runnerInputBox.value = ""; // empty input box
 
     // ignore input if already guessed
     let errorMessage = document.getElementById("errorMessage");
@@ -222,7 +225,6 @@ document.getElementById("runnerSubmit").onclick = function(){
 
     // increase guesses, end if max guesses
 
-
     let yellow_background = "rgb(255, 191, 0)"; // reusable yellow colour
 
     // fetches all runner data
@@ -232,7 +234,7 @@ document.getElementById("runnerSubmit").onclick = function(){
             for(let value of values){
 
                 // checks if entered runner exists
-                isValidRunner = values.some((obj) => obj.name === runner);
+                isValidRunner = values.some((obj) => obj.name.toLowerCase() === runner.toLowerCase());
                 if(!isValidRunner){
                     errorMessage.textContent = "Not a valid runner";
                     break
@@ -510,6 +512,15 @@ dialogue.addEventListener("click", (e) => {
         dialogue.close();
     }
 });
+
+
+// enable pressing enter to input runner
+runnerInputBox.addEventListener("keypress", function(event) {
+    if(event.key === "Enter"){
+        event.preventDefault(); // prevent usual action of enter
+        runnerSubmitBtn.click(); // run submit
+    }
+})
 
 
 // copy results to clipboard when button clicked
