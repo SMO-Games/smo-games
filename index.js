@@ -8,6 +8,8 @@ const runnerInputBox = document.getElementById("runnerInputBox");
 const runnerSubmitBtn = document.getElementById("runnerSubmit");
 // for validating runner input
 let isValidRunner = false;
+// for error message
+const errorMessage = document.getElementById("errorMessage");
 // for handling game over popup
 const gameOverDialogue = document.getElementById("gameOverDialogue");
 const gameOverWrapper = document.querySelector(".wrapper");
@@ -301,8 +303,13 @@ document.getElementById("runnerSubmit").onclick = function(){
     let runner = runnerInputBox.value; // gets value from input
     runnerInputBox.value = ""; // empty input box
 
+    // ignore input if empty
+    if(runner.trim() === ""){
+        errorMessage.textContent = "Please enter a runner";
+        return
+    }
+
     // ignore input if already guessed
-    let errorMessage = document.getElementById("errorMessage");
     if(inputs.includes(runner)){
         errorMessage.textContent = "Runner already guessed";
         return
