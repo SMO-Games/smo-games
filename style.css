@@ -16,11 +16,16 @@ dialog .wrapper{
     justify-content: center;
     align-items: center;
     text-align: center;
+    
 }
 dialog{
+    /* remove scrollbar */
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+    border: 5px solid rgb(20, 3, 45);
+    background-color: rgb(47, 3, 77);
 }
+/* remove scrollbar */
 dialog::-webkit-scrollbar {
     display: none;
 }
@@ -86,7 +91,6 @@ button {
     justify-content: center;
     align-items: center;
     font-size: 1.5rem;
-    margin-right: 10px;
     color: white;
     font-weight: bold;
 }
@@ -133,8 +137,6 @@ button {
     border-radius: 20px;
     margin-right: 5px;
     padding: 8px;
-    padding-right: 15px;
-    padding-left: 15px;
     text-align: center;
     text-decoration: none;
 }
@@ -165,7 +167,7 @@ button {
 
 #runnerInput{
     display: flex;
-    margin-top: 40px;
+    margin-top: 15px;
 }
 #runnerInputBox{
     font-size: 1.5rem;
@@ -215,7 +217,6 @@ button {
 
 #howToPlayDialogue{
     padding: 0;
-    background-color: rgb(47, 3, 77);
     color: white;
 }
 #howToPlayDialogue[open]{
@@ -241,7 +242,6 @@ button {
 
 #aboutDialogue{
     padding: 0;
-    background-color: rgb(47, 3, 77);
     color: white;
 }
 #aboutDialogue[open]{
@@ -268,7 +268,7 @@ button {
     font-weight: bold;
 }
 #aboutDialogue a:hover{
-    color: rgb(185, 0, 158);
+    color: rgb(182, 0, 155);
 }
 #aboutDialogue a:active{
     color: rgb(150, 0, 127);
@@ -277,7 +277,6 @@ button {
 
 #gameOverDialogue{
     padding: 0;
-    background-color: rgb(47, 3, 77);
     color: white;
 }
 #gameOverDialogue[open]{
