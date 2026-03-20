@@ -2,32 +2,34 @@
 let row = 0; // current row
 let inputs = []; // all previous inputs
 let guesses = 0; // current number of guesses already submitted
-let allowedGuesses = 6;
+const allowedGuesses = 6;
 // handles input
-let runnerInputBox = document.getElementById("runnerInputBox");
-let runnerSubmitBtn = document.getElementById("runnerSubmit");
+const runnerInputBox = document.getElementById("runnerInputBox");
+const runnerSubmitBtn = document.getElementById("runnerSubmit");
 // for validating runner input
 let isValidRunner = false;
 // for handling pop up
-let dialogue = document.getElementById("gameOverDialogue");
-let dialogueWrapper = document.querySelector(".wrapper");
-let showResultsBtn = document.getElementById("showResultsBtn")
+const dialogue = document.getElementById("gameOverDialogue");
+const dialogueWrapper = document.querySelector(".wrapper");
+const showResultsBtn = document.getElementById("showResultsBtn")
 // for changing pop up text
-let resultText = document.getElementById("resultText");
-let runnerNameText = document.getElementById("runnerNameText");
-let runnerInfoText = document.getElementById("runnerInfoText");
+const resultText = document.getElementById("resultText");
+const runnerNameText = document.getElementById("runnerNameText");
+const runnerInfoText = document.getElementById("runnerInfoText");
 // for handling copying results
-let copyBtn = document.getElementById("copyResultsBtn");
-let confirmCopied = document.getElementById("confirmCopied");
+const copyBtn = document.getElementById("copyResultsBtn");
+const confirmCopied = document.getElementById("confirmCopied");
 let gameResults = "";
 let formattedResults;
 // urls
-let runnerData = "runnerData.json";
-let gameURL = "smo-games.github.io";
+const runnerData = "runnerData.json";
+const gameURL = "smo-games.github.io";
 // range to be within to turn yellow
-let mostRecentRange = 60;
-let bestPlacementRange = 15;
-let pbRange = 60;
+const mostRecentRange = 60;
+const bestPlacementRange = 15;
+const pbRange = 60;
+// for handling animation of results
+const animationDelay = 150;
 
 
 // returns array of every runner
@@ -199,7 +201,6 @@ function addRow(rowNum){
     // document.getElementById(`categoryResults${rowNum}`).append(rowBox);
     // for every required box, create the element and set its values
     for(let boxID of boxIDs){
-
         // current index for accessing other arrays
         let index = boxIDs.indexOf(boxID);
 
@@ -242,6 +243,24 @@ function endGame(){
     document.getElementById("runnerInputBox").disabled = true; // prevent further guesses
     dialogue.showModal();
     showResultsBtn.style.display = "inline-block";
+}
+
+
+// handles animating the result boxes in sequence
+function animateBoxes(box){
+    return new Promise((resolve, reject) => {
+        box.classList.add("animated");
+        setTimeout(() => {
+            box.style.opacity = 1;
+            animatedSuccessfully = true;
+            if(animatedSuccessfully){
+            resolve(true)
+            }
+            else{
+                reject(false)
+            }
+        }, animationDelay);
+    })
 }
 
 
@@ -509,14 +528,23 @@ document.getElementById("runnerSubmit").onclick = function(){
 
                     // adds values to all the boxes
                     runnerResultBox.textContent = value.name;
-                    document.getElementById(`nationalityResultBox${row}`).textContent = formatted_country;
-                    document.getElementById(`consoleResultBox${row}`).textContent = value.console;
-                    document.getElementById(`pbResultBox${row}`).textContent = formatted_pb;
-                    document.getElementById(`mostRecentResultBox${row}`).textContent = value.most_recent_run;
-                    document.getElementById(`bestMBResultBox${row}`).textContent = value.best_mb_placement[0];
-                    document.getElementById(`bestCEResultBox${row}`).textContent = value.best_ce_placement[0];
+                    nationalityResultBox.textContent = formatted_country;
+                    consoleResultBox.textContent = value.console;
+                    pbResultBox.textContent = formatted_pb;
+                    mostRecentResultBox.textContent = value.most_recent_run;
+                    bestMBResultBox.textContent = value.best_mb_placement[0];
+                    bestCEResultBox.textContent = value.best_ce_placement[0];
 
-                    gameResults += "\n"
+                    // animates each result box in sequence
+                    animateBoxes(document.getElementById(`runnerBox${row}`))
+                    .then(() => {return animateBoxes(document.getElementById(`nationalityBox${row}`))})
+                    .then(() => {return animateBoxes(document.getElementById(`consoleBox${row}`))})
+                    .then(() => {return animateBoxes(document.getElementById(`pbBox${row}`))})
+                    .then(() => {return animateBoxes(document.getElementById(`mostRecentBox${row}`))})
+                    .then(() => {return animateBoxes(document.getElementById(`bestMBBox${row}`))})
+                    .then(() => {return animateBoxes(document.getElementById(`bestCEBox${row}`))})
+
+                    gameResults += "\n" // new line to game results for copying at the end
 
                     break
                 }                
