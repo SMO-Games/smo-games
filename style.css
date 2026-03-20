@@ -120,6 +120,7 @@ button {
     font-size: 1.5rem;
     border-radius: 10px;
     margin-left: 10px;
+    color: black;
     overflow-wrap: normal;
     background-color: rgb(255, 255, 255);
 }
