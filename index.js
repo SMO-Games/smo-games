@@ -373,7 +373,7 @@ document.getElementById("runnerSubmit").onclick = function(){
                     }
                     // if answer has no flag on src BUT inputted user does
                     else if(answer.country[0] === null){
-                        nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ❌ [Not on SRC]";
+                        nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ❌ [None on SRC]";
                         gameResults += "🟥"
                         nationalityResultBox.style.backgroundColor = 'red';
                     }
