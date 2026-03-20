@@ -38,6 +38,12 @@ const bestPlacementRange = 10;
 const pbRange = 60;
 // for handling animation of results
 const animationDelay = 150;
+// for date shenanigans
+const date = new Date();
+dateString = `${date.getDate()} ${date.getMonth()} ${date.getFullYear()} | UTC: ${date.getUTCDate()} ${date.getUTCMonth()} ${date.getUTCFullYear()}`
+document.getElementById("timeTest").textContent = dateString;
+
+
 
 
 // returns array of every runner
@@ -127,8 +133,8 @@ function convertSeconds(seconds){
 // converts date into words
 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 function convertDate(date_str) {
-  temp_date = date_str.split("-");
-  return temp_date[2].replace(/^0+/, '') + " " + months[Number(temp_date[1]) - 1] + " " + temp_date[0];
+    temp_date = date_str.split("-");
+    return temp_date[2].replace(/^0+/, '') + " " + months[Number(temp_date[1]) - 1] + " " + temp_date[0];
 }
 
 

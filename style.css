@@ -7,50 +7,8 @@ body{
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url("background1.png");
-    animation: changeBg 600s infinite forwards;
+    background-image: url(background2.jpg);
 }
-
-.loadImages{
-    display: none;
-}
-
-@keyframes changeBg{
-    0%{
-        background-image: url("background1.jpg");
-    }
-    10%{
-        background-image: url("background2.jpg");
-    }
-    20%{
-        background-image: url("background3.jpg");
-    }
-    30%{
-        background-image: url("background4.jpg");
-    }
-    40%{
-        background-image: url("background5.jpg");
-    }
-    50%{
-        background-image: url("background6.jpg");
-    }
-    60%{
-        background-image: url("background7.jpg");
-    }
-    70%{
-        background-image: url("background8.jpg");
-    }
-    80%{
-        background-image: url("background9.jpg");
-    }
-    90%{
-        background-image: url("background10.jpg");
-    }
-    100%{
-        background-image: url("background1.jpg");
-    }
-}
-
 .center{
     justify-content: center;
     align-items: center;
