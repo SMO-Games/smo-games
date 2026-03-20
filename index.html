@@ -10,29 +10,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+    <div class="center">
+        <img src="guessthesmorunner.png" alt="Guess the SMO Runner Logo" class="gameResultsLogo">
+    </div>
+    
 
     <dialog id="gameOverDialogue">
         <div class="wrapper">
-            <h1>Guess the SMO Runner</h1>
-            <h2>Thanks for playing!</h2>
+            <button type="button" id="exitDialogue" class="dialogueBtn" onclick=exitGameOverDialogue()><i class="fa-solid fa-x"></i></button>
+            <img src="guessthesmorunner.png" alt="Guess the SMO Runner Logo" class="gameResultsLogo">
+            <h1>Thanks for playing!</h1>
             <p id="resultText"></p>
             <p id="runnerNameText"></p>
-            <p id="runnerInfoText"></p>
-            <button id="copyResultsBtn" class="gameResultsBtn" onclick=copyResults()>Share  <i class="fa-regular fa-copy"></i></button>
+            <p id="confirmCopied"></p>
+            <button id="copyResultsBtn" class="copyResults" onclick=copyResults() data-tooltip="Copy your results to share in places like Discord!">Share  <i class="fa-regular fa-copy"></i></button>
             <br>
-            <button type="button" id="exitDialogue" class="gameResultsBtn" onclick=exitGameOverDialogue()>Exit</button>
+            <button id="copyResultsTwitchBtn" class="copyResults" onclick=copyResultsTwitch() data-tooltip="Copies results in a format friendlier to Twitch chats!">Share (for Twitch chat) <i class="fa-brands fa-twitch"></i></button>
+            <p id="runnerInfoText"></p>
         </div>
     </dialog>
 
     <p id="errorMessage" class="center infoParagraphs"></p>
     <p id="guessCounter" class="center infoParagraphs">Make a guess!</p>
 
-    <div class="center">
-        <div class="center" id="runnerInput">
-            <input id="runnerInputBox" autocomplete="off" list="runners" type="text">
-            <datalist id="runners" class="list"></datalist>
-            <button type="submit" id="runnerSubmit">Submit</button>
-        </div>
+    <div class="center" id="runnerInput">
+        <input id="runnerInputBox" autocomplete="off" list="runners" type="text">
+        <datalist id="runners" class="list"></datalist>
+        <button type="submit" id="runnerSubmit">Submit</button>
+    </div>
+
+    <div class="center" id="showResults">
+        <button id="showResultsBtn" onclick=openGameOverDialogue()>Show Results</button>
     </div>
 
     <br><br>

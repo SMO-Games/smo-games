@@ -1,4 +1,33 @@
+// handles adding rows
+let row = 0; // current row
+let inputs = []; // all previous inputs
+let guesses = 0; // current number of guesses already submitted
+let allowedGuesses = 6;
+// handles input
+let runnerInputBox = document.getElementById("runnerInputBox");
+let runnerSubmitBtn = document.getElementById("runnerSubmit");
+// for validating runner input
+let isValidRunner = false;
+// for handling pop up
+let dialogue = document.getElementById("gameOverDialogue");
+let dialogueWrapper = document.querySelector(".wrapper");
+let showResultsBtn = document.getElementById("showResultsBtn")
+// for changing pop up text
+let resultText = document.getElementById("resultText");
+let runnerNameText = document.getElementById("runnerNameText");
+let runnerInfoText = document.getElementById("runnerInfoText");
+// for handling copying results
+let copyBtn = document.getElementById("copyResultsBtn");
+let confirmCopied = document.getElementById("confirmCopied");
+let gameResults = "";
+let formattedResults;
+// urls
 let runnerData = "runnerData.json";
+let gameURL = "smo-games.github.io";
+// range to be within to turn yellow
+let mostRecentRange = 60;
+let bestPlacementRange = 15;
+let pbRange = 60;
 
 
 // returns array of every runner
@@ -112,7 +141,8 @@ function getAnswer(correct_runner){
 
 
                     // update runner info text to answer
-                    runnerInfoText.textContent = `Country: ${value.country[1]} [${value.country[2]}]\n
+                    runnerInfoText.textContent = `Runner Info:\n
+                                                Country: ${value.country[1]} [${value.country[2]}]\n
                                                 Console: ${answer.console}\n
                                                 Any% PB: ${convertSeconds(answer.pb)}\n
                                                 Most Recent Run: ${answer.most_recent_run}\n
@@ -130,12 +160,22 @@ function getAnswer(correct_runner){
 function addRow(rowNum){
     let rowDiv = document.createElement("div");
 
-    // list of ids and names for each category
+    // list of ids for each category
     let boxIDs = ["runner", "nationality", "console",
         "pb", "mostRecent", "bestMB", "bestCE"
     ]
+    // list of actual category names
     let categoryNames = ["Runner", "Nationality", "Console",
         "Any% PB", "Most Recent Run", "Best MB Placement", "Best CE Placement"]
+    // list of category tooltips
+    let categoryTooltips = ["The runner's username on Speedrun.com.",
+                            "The runner's nationality set on Speedrun.com. Turns yellow if in the correct continent.",
+                            "The console used in the runner's Any% PB.",
+                            "The runner's Any% 1P PB. Turns yellow if within 1 minute.",
+                            `The runner's most recently submitted run on either official SMO leaderboard. Turns yellow if within ${mostRecentRange} days.`,
+                            `The runner's current best Main Leaderboard placement in any category. Turns yellow if within ${bestPlacementRange}.`,
+                            `The runner's current best CE Leaderboard placement in any category. Turns yellow if within ${bestPlacementRange}.`
+    ]
     // set class and id of row box
     rowDiv.classList.add("center", "grid-container");
     rowDiv.id = `categoryResults${rowNum}Box`;
@@ -160,6 +200,9 @@ function addRow(rowNum){
     // for every required box, create the element and set its values
     for(let boxID of boxIDs){
 
+        // current index for accessing other arrays
+        let index = boxIDs.indexOf(boxID);
+
         // create category box
         let categoryBox = document.createElement("box");
         categoryBox.classList.add("categoryBox");
@@ -172,8 +215,16 @@ function addRow(rowNum){
         categoryLabelBox.id = `${boxID}LabelBox${rowNum}`
         document.getElementById(categoryBox.id).append(categoryLabelBox);
 
+        // create tooltip
+        let categoryTooltip = document.createElement("button");
+        categoryTooltip.classList.add("categoryTooltip");
+        categoryTooltip.id = `${boxID}Tooltip${rowNum}`;
+        categoryTooltip.innerHTML = '<i class="fa-solid fa-question"></i>'; // add icon
+        categoryTooltip.setAttribute("data-tooltip", categoryTooltips[index]);
+
+        document.getElementById(categoryBox.id).append(categoryTooltip);
+
         // add label
-        let index = boxIDs.indexOf(boxID);
         categoryLabelBox.textContent = categoryNames[index];
 
         // create category result box
@@ -186,25 +237,12 @@ function addRow(rowNum){
 }
 
 
-let row = 0; // current row
-let inputs = []; // all previous inputs
-let guesses = 0; // current number of guesses already submitted
-let allowedGuesses = 6;
-// handles input
-let runnerInputBox = document.getElementById("runnerInputBox");
-let runnerSubmitBtn = document.getElementById("runnerSubmit");
-// for validating runner input
-let isValidRunner = false;
-// for handling pop up
-let dialogue = document.getElementById("gameOverDialogue");
-let dialogueWrapper = document.querySelector(".wrapper");
-// for changing pop up text
-let resultText = document.getElementById("resultText");
-let runnerNameText = document.getElementById("runnerNameText");
-let runnerInfoText = document.getElementById("runnerInfoText");
-// for handling copying results
-let copyBtn = document.getElementById("copyResultsBtn");
-let gameResults = "";
+// prevents guessing and shows dialogue
+function endGame(){
+    document.getElementById("runnerInputBox").disabled = true; // prevent further guesses
+    dialogue.showModal();
+    showResultsBtn.style.display = "inline-block";
+}
 
 
 // fills rows per submitted user
@@ -240,7 +278,6 @@ document.getElementById("runnerSubmit").onclick = function(){
                     break
                 }  
 
-
                 if(value.name.toLowerCase() === runner.toLowerCase()){ // finds inputted runner
 
                     guesses++;
@@ -248,9 +285,9 @@ document.getElementById("runnerSubmit").onclick = function(){
                     // check if reached max guesses
                     let guessCounter = document.getElementById("guessCounter");
                     guessCounter.textContent = `Guesses: ${guesses}/${allowedGuesses}`;
+                    // end game
                     if(guesses === allowedGuesses){
-                        document.getElementById("runnerInputBox").disabled = true; // prevent further guesses
-                        dialogue.showModal();
+                        endGame();
                     }
 
                     // increase row count and add the row
@@ -265,9 +302,18 @@ document.getElementById("runnerSubmit").onclick = function(){
                         runnerLabelBox.textContent = runnerLabelBox.textContent + " ✅";
                         runnerResultBox.style.backgroundColor = 'green';
                         // end game
-                        document.getElementById("runnerInputBox").disabled = true; // prevent further guesses
-                        dialogue.showModal(); // show dialogue
-                        resultText.textContent = `You successfully guessed it was ${answer.name} in ${guesses} guesses!`
+                        endGame();
+
+                        // makes "guess" plural only if more than 1 guess
+                        let isPlural;
+                        if(guesses === 1){
+                            isPlural = "";
+                        }
+                        else{
+                            isPlural = "es"
+                        }
+
+                        resultText.textContent = `You successfully guessed it was ${answer.name} in ${guesses} guess${isPlural}!`
                     }
                     else{
                         runnerLabelBox.textContent = runnerLabelBox.textContent + " ❌";
@@ -356,7 +402,7 @@ document.getElementById("runnerSubmit").onclick = function(){
                     if(value.pb === answer.pb){
                         pbResultBox.style.backgroundColor = "green";
                     }
-                    else if(pbDifference >= 60){
+                    else if(pbDifference >= pbRange){
                         pbResultBox.style.backgroundColor = "red";
                     }
                     else{
@@ -381,7 +427,7 @@ document.getElementById("runnerSubmit").onclick = function(){
                     if(dateDifference === 0){
                         mostRecentResultBox.style.backgroundColor = "green";
                     }
-                    else if(dateDifference >= 60){
+                    else if(dateDifference >= mostRecentRange){
                         mostRecentResultBox.style.backgroundColor = "red";
                     }
                     else{
@@ -403,7 +449,7 @@ document.getElementById("runnerSubmit").onclick = function(){
                     if(bestMBDifference === 0){
                         bestMBResultBox.style.backgroundColor = "green";
                     }
-                    else if(bestMBDifference >= 15){
+                    else if(bestMBDifference >= bestPlacementRange){
                         bestMBResultBox.style.backgroundColor = "red";
                     }
                     else{
@@ -423,7 +469,7 @@ document.getElementById("runnerSubmit").onclick = function(){
                     if(bestCEDifference === 0){
                         bestCEResultBox.style.backgroundColor = "green";
                     }
-                    else if(bestCEDifference >= 15){
+                    else if(bestCEDifference >= bestPlacementRange){
                         bestCEResultBox.style.backgroundColor = "red";
                     }
                     else{
@@ -504,6 +550,9 @@ getRunners().then(runners => {
 function exitGameOverDialogue(){
     dialogue.close();
 };
+function openGameOverDialogue(){
+    dialogue.showModal();
+}
 
 
 // lets you close the dialogue by clicking anywhere outside of it
@@ -524,10 +573,21 @@ runnerInputBox.addEventListener("keypress", function(event) {
 
 
 // copy results to clipboard when button clicked
-function copyResults(){
-    let formattedResults = `Guess the SMO Runner [${guesses}/${allowedGuesses}]\n${gameResults}TESTING ONLY - Answer: ${answer.name}`;
-    navigator.clipboard.writeText(formattedResults)
+// normal results
+function copyResults(resultsType){
+    formattedResults = `Guess the SMO Runner [${guesses}/${allowedGuesses}]\n${gameResults}${gameURL}
+                            \nTESTING ONLY - Answer: ${answer.name}`;
+    navigator.clipboard.writeText(formattedResults);
+    confirmCopied.textContent = "Results copied!";
+    setTimeout(() => {confirmCopied.textContent = ""}, 2000)
 };
+// twitch chat results
+function copyResultsTwitch(){
+    formattedResults = `Guess the SMO Runner [${guesses}/${allowedGuesses}] --- ${gameResults.replace(/[\r\n]+/gm, " | ")}${gameURL.replace(".", " ").replace(".", " ")}`// replace new lines with |, avoid link detection 
+    navigator.clipboard.writeText(formattedResults);
+    confirmCopied.textContent = "Twitch results copied!";
+    setTimeout(() => {confirmCopied.textContent = ""}, 2000)
+}
 
 
 // add all runners to datalist
