@@ -40,10 +40,22 @@ const pbRange = 60;
 const animationDelay = 150;
 // for date shenanigans
 const date = new Date();
-dateString = `Local: ${date.getDate()}/${date.getMonth()}/${date.getFullYear()} | UTC: ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getUTCFullYear()} ||| Local: ${date.getTime()} | UTC: ${date.getTimezoneOffset()}`
-document.getElementById("timeTest").textContent = dateString;
+const day = String(date.getDate());
+const month = String(date.getMonth() + 1);
+const year = String(date.getFullYear());
+fullDate = Number(`${day.padStart(2, "0")}${month.padStart(2, "0")}${year}`);
 
 
+// seeded random https://medium.com/@modos.m98/creating-a-seeded-random-string-generator-in-javascript-3165aae1c2d5
+function mulberry32(seed) {
+    return function() {
+        let t = (seed += 0x6D2B79F5);
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+}
+const runnerSeed = mulberry32(fullDate);
 
 
 // returns array of every runner
@@ -617,9 +629,10 @@ getRunners().then(runners => {
             runnerTextLine = ""
         }
     })
-    //document.getElementById("runnerList").textContent = runnerText;
+    
 
-    let answer = runners[Math.floor(Math.random()*runners.length)];
+    let answer = runners[Math.floor(runnerSeed()*runners.length)];
+    document.getElementById("timeTest").textContent = `${fullDate} - ${answer}`;
     getAnswer(answer);
 });
 
