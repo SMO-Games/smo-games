@@ -109,7 +109,7 @@ function convertSeconds(seconds){
                 seconds.toString().padStart(2, '0');
     }
     else{
-        timeString = hours.toString().padStart(2, '0') + ':' + 
+        timeString = hours.toString().padStart(1, '0') + ':' + 
                 minutes.toString().padStart(2, '0') + ':' + 
                 seconds.toString().padStart(2, '0');
     }
