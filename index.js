@@ -237,7 +237,7 @@ function addRow(rowNum){
         let categoryTooltip = document.createElement("button");
         categoryTooltip.classList.add("categoryTooltip");
         categoryTooltip.id = `${boxID}Tooltip${rowNum}`;
-        categoryTooltip.innerHTML = '<i class="fa-solid fa-question"></i>'; // add icon
+        categoryTooltip.innerHTML = '?'; // add icon
         categoryTooltip.setAttribute("data-tooltip", categoryTooltips[index]); // set tooltip to corresponding string in array
 
         document.getElementById(categoryBox.id).append(categoryTooltip);
