@@ -17,6 +17,13 @@ dialog .wrapper{
     align-items: center;
     text-align: center;
 }
+dialog{
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+dialog::-webkit-scrollbar {
+    display: none;
+}
 dialog .howToPlayWrapper{
     padding: 16px;
     justify-content: center;
@@ -259,6 +266,9 @@ button {
 #aboutDialogue a{
     color: rgb(255, 0, 216);
     font-weight: bold;
+}
+#aboutDialogue a:hover{
+    color: rgb(185, 0, 158);
 }
 #aboutDialogue a:active{
     color: rgb(150, 0, 127);

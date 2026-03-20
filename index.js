@@ -188,12 +188,12 @@ function addRow(rowNum){
         "Any% PB", "Most Recent Run", "Best MB Placement", "Best CE Placement"]
     // list of category tooltips
     let categoryTooltips = ["The runner's username on Speedrun.com.",
-                            "The runner's nationality set on Speedrun.com. Turns yellow if in the correct continent.",
+                            "The runner's nationality set on Speedrun.com.\nTurns yellow if in the correct continent.\n\nSays [None on SRC] if the correct runner does not have a nationality selected.",
                             "The console used in the runner's Any% 1P PB.",
-                            "The runner's Any% 1P PB.\nTurns yellow if within 1 minute.\n⬆️ = Slower\n⬇️ = Faster",
-                            `The date [YYYY-MM-DD] of the runner's most recently submitted run on either official SMO leaderboard.\nTurns yellow if within ${mostRecentRange} days.\n⬆️ = More recent\n⬇️ = Less recent`,
-                            `The runner's current best Main Leaderboard placement in any category.\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement`,
-                            `The runner's current best CE Leaderboard placement in any category.\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement`
+                            "The runner's Any% 1P PB.\n\nTurns yellow if within 1 minute.\n⬆️ = Slower\n⬇️ = Faster",
+                            `The date [YYYY-MM-DD] of the runner's most recently submitted run on either official SMO leaderboard.\n\nTurns yellow if within ${mostRecentRange} days.\n⬆️ = More recent\n⬇️ = Less recent`,
+                            `The runner's current best Main Leaderboard placement in any category.\n\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement`,
+                            `The runner's current best CE Leaderboard placement in any category.\n\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement`
     ]
     // set class and id of row box
     rowDiv.classList.add("center", "grid-container");
