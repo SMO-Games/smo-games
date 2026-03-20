@@ -73,7 +73,7 @@ def getBestPlacement(base_url, runner_id, game_id):
         best_placement = pbs[0]["place"]
         best_category = pbs[0]["run"]["category"]
 
-        # TO DO: fix this, for some reason it can include obsolete runs and their former placement
+        # TO DO: fix this, for some reason it can include obsolete runs and their former placement (i think?)
         # checks every pb to see if it has a new best placement
         for pb in pbs:
             # grabs placement and category
@@ -346,7 +346,7 @@ def getCategories(base_url, game_id):
 def writeToJSON(runners_limit):
     runners = getCategoryRunners(base, mb_id, any_id, runners_limit, any_1p_var)
     # outputs data to json file idk how it works lol
-    with open("output1.json", "w") as final:
+    with open("runnerData.json", "w") as final:
         json.dump(runners, final, indent=2, default=lambda x: list(x) if isinstance(x, tuple) else str(x))
 
 

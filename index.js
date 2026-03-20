@@ -43,7 +43,7 @@ function getRunners(){
             values.forEach(value => {
                 names.push(value.name);
             })
-            names.sort((a, b) => a.localeCompare(b));
+            names.sort((a, b) => a.localeCompare(b)); // compares for alphabetical order
             resolve(names);    
     })
     })
