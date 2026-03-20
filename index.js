@@ -141,15 +141,26 @@ function getAnswer(correct_runner){
                     answer.best_mb_placement = value.best_mb_placement[0];
                     answer.best_ce_placement = value.best_ce_placement[0];
 
+                    
+                    let formatted_country = `${answer.country[1]} [${answer.country[2]}]`
+                    let formatted_bestCE = answer.best_ce_placement
+                    // handle having no country, set text
+                    if(value.country[1] === null){
+                        formatted_country = "None on SRC"
+                    }
+                    // handle having no CE pb, set text
+                    if(answer.best_ce_placement === null){
+                        formatted_bestCE = "No CE PBs"
+                    }
 
                     // update runner info text to answer
                     runnerInfoText.textContent = `Runner Info:\n
-                                                Country: ${value.country[1]} [${value.country[2]}]\n
+                                                Country: ${formatted_country}\n
                                                 Console: ${answer.console}\n
                                                 Any% PB: ${convertSeconds(answer.pb)}\n
                                                 Most Recent Run: ${answer.most_recent_run}\n
                                                 Best MB Placement: ${answer.best_mb_placement}\n
-                                                Best CE Placement: ${answer.best_ce_placement}`;
+                                                Best CE Placement: ${formatted_bestCE}`;
                 }
             }
         })
