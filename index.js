@@ -98,6 +98,7 @@ function getFlagEmoji(countryCode) {
 }
 
 
+// converts seconds into h:mm:ss
 function convertSeconds(seconds){
     dateObj = new Date(seconds * 1000);
     hours = dateObj.getUTCHours();
@@ -115,6 +116,17 @@ function convertSeconds(seconds){
     }
     
     return timeString;
+}
+
+
+// Source - https://stackoverflow.com/a/20438448
+// Posted by Rhyono, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-03-20, License - CC BY-SA 3.0
+// converts date into words
+let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+function convertDate(date_str) {
+  temp_date = date_str.split("-");
+  return temp_date[2].replace(/^0+/, '') + " " + months[Number(temp_date[1]) - 1] + " " + temp_date[0];
 }
 
 
@@ -160,13 +172,13 @@ function getAnswer(correct_runner){
                     }
 
                     // update runner info text to answer
-                    runnerInfoText.textContent = `Runner Info:\n
-                                                Country: ${formatted_country}\n
-                                                Console: ${answer.console}\n
-                                                Any% PB: ${convertSeconds(answer.pb)}\n
-                                                Most Recent Run: ${answer.most_recent_run}\n
-                                                Best MB Placement: ${answer.best_mb_placement}\n
-                                                Best CE Placement: ${formatted_bestCE}`;
+                    runnerInfoText.innerHTML = `<h3>Runner Info</h3>
+                                                <strong>Country:</strong> ${formatted_country}\n
+                                                <strong>Console:</strong> ${answer.console}\n
+                                                <strong>Any% PB:</strong> ${convertSeconds(answer.pb)}\n
+                                                <strong>Most Recent Run:</strong> ${convertDate(answer.most_recent_run)}\n
+                                                <strong>Best MB Placement:</strong> ${answer.best_mb_placement}\n
+                                                <strong>Best CE Placement:</strong> ${formatted_bestCE}`;
                 }
             }
         })
@@ -191,7 +203,7 @@ function addRow(rowNum){
                             "The runner's nationality set on Speedrun.com.\nTurns yellow if in the correct continent.\n\nSays [None on SRC] if the correct runner does not have a nationality selected.",
                             "The console used in the runner's Any% 1P PB.",
                             "The runner's Any% 1P PB.\n\nTurns yellow if within 1 minute.\n⬆️ = Slower\n⬇️ = Faster",
-                            `The date [YYYY-MM-DD] of the runner's most recently submitted run on either official SMO leaderboard.\n\nTurns yellow if within ${mostRecentRange} days.\n⬆️ = More recent\n⬇️ = Less recent`,
+                            `The date of the runner's most recently submitted run on either official SMO leaderboard.\n\nTurns yellow if within ${mostRecentRange} days.\n⬆️ = More recent\n⬇️ = Less recent`,
                             `The runner's current best Main Leaderboard placement in any category.\n\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement`,
                             `The runner's current best CE Leaderboard placement in any category.\n\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement`
     ]
@@ -555,7 +567,7 @@ document.getElementById("runnerSubmit").onclick = function(){
                     nationalityResultBox.textContent = formatted_country;
                     consoleResultBox.textContent = value.console;
                     pbResultBox.textContent = formatted_pb;
-                    mostRecentResultBox.textContent = value.most_recent_run;
+                    mostRecentResultBox.textContent = convertDate(value.most_recent_run);
                     bestMBResultBox.textContent = value.best_mb_placement[0];
                     bestCEResultBox.textContent = value.best_ce_placement[0];
 
