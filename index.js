@@ -189,7 +189,7 @@ function addRow(rowNum){
     // list of category tooltips
     let categoryTooltips = ["The runner's username on Speedrun.com.",
                             "The runner's nationality set on Speedrun.com. Turns yellow if in the correct continent.",
-                            "The console used in the runner's Any% PB.",
+                            "The console used in the runner's Any% 1P PB.",
                             "The runner's Any% 1P PB. Turns yellow if within 1 minute.\n⬆️ = Faster\n⬇️ = Slower",
                             `The date of the runner's most recently submitted run on either official SMO leaderboard.\nTurns yellow if within ${mostRecentRange} days.\n⬆️ = More recent\n⬇️ = Less recent`,
                             `The runner's current best Main Leaderboard placement in any category.\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement`,
