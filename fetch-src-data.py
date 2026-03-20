@@ -350,4 +350,4 @@ def writeToJSON(runners_limit):
         json.dump(runners, final, indent=2, default=lambda x: list(x) if isinstance(x, tuple) else str(x))
 
 
-writeToJSON(20)
+writeToJSON(100)
