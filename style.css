@@ -83,7 +83,7 @@ button {
     margin-top: 25px;
 }
 .gameResultsLogo{
-    width: 14rem;
+    width: 16rem;
     margin-left: auto;
     margin-right: auto;
     display: block;
@@ -129,6 +129,9 @@ button {
 }
 #runnerSubmit:active{
     background-color: rgb(184, 184, 184);
+}
+#runnerSubmit:disabled{
+    background-color: grey
 }
 
 #resultText{

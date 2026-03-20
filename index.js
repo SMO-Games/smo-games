@@ -251,7 +251,9 @@ function addRow(rowNum){
 
 // prevents guessing and shows dialogue
 function endGame(){
-    document.getElementById("runnerInputBox").disabled = true; // prevent further guesses
+    // prevent further guesses
+    runnerInputBox.disabled = true;
+    runnerSubmitBtn.disabled = true;
     // open dialogue
     dialogue.showModal();
     showResultsBtn.style.display = "inline-block"; // reveal show results button
