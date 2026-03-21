@@ -246,12 +246,12 @@ function getAnswer(correct_runner){
 
                     // update runner info text to answer
                     runnerInfoText.innerHTML = `<h3>Runner Info</h3>
-                                                <strong>Country:</strong> ${formatted_country}\n
-                                                <strong>Console:</strong> ${answer.console}\n
-                                                <strong>Any% PB:</strong> ${convertSeconds(answer.pb)}\n
-                                                <strong>Most Recent Run:</strong> ${convertDate(answer.most_recent_run)}\n
-                                                <strong>Best MB Placement:</strong> ${answer.best_mb_placement}\n
-                                                <strong>Best CE Placement:</strong> ${formatted_bestCE}`;
+                                                <b>Country:</b> ${formatted_country}\n
+                                                <b>Console:</b> ${answer.console}\n
+                                                <b>Any% PB:</b> ${convertSeconds(answer.pb)}\n
+                                                <b>Most Recent Run:</b> ${convertDate(answer.most_recent_run)}\n
+                                                <b>Best MB Placement:</b> ${answer.best_mb_placement}\n
+                                                <b>Best CE Placement:</b> ${formatted_bestCE}`;
                 }
             }
         })
@@ -424,7 +424,7 @@ function submitRunner(runner, isCookie){
 
                         // check if reached max guesses
                         let guessCounter = document.getElementById("guessCounter");
-                        guessCounter.textContent = `Guesses: ${guesses}/${allowedGuesses}`;
+                        guessCounter.innerHTML = `<mark>Guesses: ${guesses}/${allowedGuesses}</mark>`;
                         // end game
                         if(guesses === allowedGuesses){
                             setTimeout(() => {
