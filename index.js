@@ -946,4 +946,3 @@ function generateStats(){
 
 
 generateStats(); // load stats TO DO: make this reset
-console.log(document.cookie);
