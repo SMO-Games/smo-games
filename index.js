@@ -75,9 +75,10 @@ function mulberry32(seed) {
 // get random number to be used for daily random
 const runnerSeed = mulberry32(fullDate);
 const randomFloat = runnerSeed();
+
 // set daily background image
 const dailyBGImg = bgImgs[Math.floor(randomFloat*bgImgs.length)]
-document.body.style.backgroundImage = `url(${dailyBGImg})`
+document.body.style.backgroundImage = `url("backgrounds/${dailyBGImg}")`
 
 
 // create a cookie
