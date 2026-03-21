@@ -349,6 +349,10 @@ button {
 #showResultsBtn:active{
     background-color: rgb(55, 109, 55);
 }
+#countdown{
+    font-size: 1.5rem;
+}
+
 
 #exitDialogue{
     font-weight: bold;

@@ -46,6 +46,8 @@ const pbRange = 60;
 const animationDelay = 150;
 // for handling cookies
 const confirmDeletedCookies = document.getElementById("confirmDeletedCookies");
+// for handling countdown text
+const countdown = document.getElementById("countdown");
 // for date shenanigans
 const date = new Date();
 let tomorrow = new Date();
@@ -787,4 +789,25 @@ getRunners().then(runners => {
     // set answer to daily random runner
     let answer = runners[Math.floor(randomFloat*runners.length)];
     getAnswer(answer);
+})
+
+
+// manage countdown timer
+let countdownInterval = setInterval(() => {
+    // get immediate time and how much is left to tomorrow
+    let currentTime = new Date().getTime();
+    let timeLeft = tomorrow - currentTime;
+    // format into (h)h:mm:ss
+    let hours = String(Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+    let minutes = String(Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60)));
+    let seconds = String(Math.floor((timeLeft % (1000 * 60)) / 1000));
+    formattedTimeLeft = `${hours}:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")}`;
+    // update countdown text
+    if(timeLeft < 0){ // if finished
+        countdown.innerHTML = `<b>Refresh!</b>`;
+        clearInterval(countdownInterval); // end JS timer
+    }
+    else{ // if not finished
+        countdown.innerHTML = `Time until next game:<br><b>${formattedTimeLeft}</b>`
+    }
 })
