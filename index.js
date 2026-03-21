@@ -387,21 +387,15 @@ function submitRunner(runner, isCookie){
 
         // ignore input if empty
         if(runner.trim() === ""){
-            errorMessage.textContent = "Please enter a runner";
+            errorMessage.innerHTML = "<mark>Please enter a runner</mark>";
             return
         }
 
         // ignore input if already guessed
         if(inputs.includes(runner)){
-            errorMessage.textContent = "Runner already guessed";
+            errorMessage.innerHTML = "<mark>Runner already guessed</mark>";
             return
         }
-        else{
-            errorMessage.textContent = ""; // clear error message if no error
-        }
-        inputs.push(runner); // add input to already guessed runners
-
-        // increase guesses, end if max guesses
 
         let yellow_background = "rgb(255, 191, 0)"; // reusable yellow colour
 
@@ -414,9 +408,12 @@ function submitRunner(runner, isCookie){
                     // checks if entered runner exists
                     isValidRunner = values.some((obj) => obj.name.toLowerCase() === runner.toLowerCase());
                     if(!isValidRunner){
-                        errorMessage.textContent = "Not a valid runner";
+                        errorMessage.innerHTML = "<mark>Not a valid runner</mark>";
                         break
-                    }  
+                    }
+                    // for error handling
+                    errorMessage.innerHTML = ""; // empty error text
+                    inputs.push(runner); // add input to already guessed runners  
 
                     if(value.name.toLowerCase() === runner.toLowerCase()){ // finds inputted runner
 
