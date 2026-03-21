@@ -191,21 +191,23 @@ button {
 }
 
 #runnerSubmit{
-    font-size: 1.5rem;
-    border-radius: 10px;
-    border: 3px solid black;
     display: block;
     margin: auto;
     margin-top: 5px;
-    color: black;
+    padding: 8px;
     overflow-wrap: normal;
-    background-color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: rgb(255, 255, 255);
+    background-color: rgb(185, 0, 158);
+    border: 3px solid black;
+    border-radius: 20px;
 }
 #runnerSubmit:hover{
-    background-color: rgb(204, 204, 204);
+    background-color: rgb(158, 0, 134);
 }
 #runnerSubmit:active{
-    background-color: rgb(184, 184, 184);
+    background-color: rgb(122, 0, 104);
 }
 #runnerSubmit:disabled{
     background-color: grey;

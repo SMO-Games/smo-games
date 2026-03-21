@@ -743,6 +743,11 @@ runnerInputBox.addEventListener("keypress", function(event) {
     if(event.key === "Enter"){
         event.preventDefault(); // prevent usual action of enter
         runnerSubmitBtn.click(); // run submit
+        // make background colour respond as if it was being clicked
+        runnerSubmitBtn.style.backgroundColor = "rgb(122, 0, 104)";
+        setTimeout(() => {
+            runnerSubmitBtn.style.backgroundColor = "rgb(185, 0, 158)";
+        }, 75);
     }
 })
 
