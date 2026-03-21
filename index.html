@@ -17,6 +17,7 @@
     <nav class="navbar">
         <ul class="center">
             <button id="howToPlayBtn" onclick=openHowToPlayDialogue()>How to Play</button>
+            <button id="statsBtn" onclick=openStatsDialogue()>Stats</button>
             <button id="aboutBtn" onclick=openAboutDialogue()>About</button>
         </ul>
     </nav>
@@ -42,6 +43,21 @@
         </div>
     </dialog>
 
+    <dialog id="statsDialogue">
+        <div class="statsWrapper">
+            <button type="button" id="exitDialogue" class="dialogueBtn" onclick=exitStatsDialogue()><i class="fa-solid fa-x"></i></button>
+            <h1>Stats</h1>
+            <h2>Your guess distribution</h2>
+            <h4>Refresh to update</h4>
+            <div id="guessChartContainer">
+                <canvas id="guessChart"></canvas>
+            </div>
+            <p id="widenGuessChart">WWWWWWWWWWWWWWWWWWWWWWWWWWWW</p> <!-- this is so stupid but it makes the chart bigger lol, nothing else was working well -->
+            <p id="totalGames"></p>
+            <p id="lastPlayed"></p>
+        </div>
+    </dialog>
+
     <dialog id="aboutDialogue">
         <div class="aboutWrapper">
             <button type="button" id="exitDialogue" class="dialogueBtn" onclick=exitAboutDialogue()><i class="fa-solid fa-x"></i></button>
@@ -59,9 +75,10 @@
             <h3>Last Updated</h3>
             <p><b>21 March 2026</b></p>
             <br>
-            <p><b>NO</b> data is collected.<br>The <b>ONLY</b> cookies stored are your guesses from today.</p>
+            <p><b>NO</b> data is collected.<br>The <b>ONLY</b> cookies stored are for your guess history.</p>
             <p id="confirmDeletedCookies"></p>
-            <button id="deleteCookiesBtn" onclick=deleteAllCookies()>Delete Cookies</button>
+            <button id="deleteCookiesBtn" onclick=deleteAllDailyCookies() class="cookiesBtns">Delete Daily Cookies</button>
+            <button id="deleteStatsCookiesBtn" onclick=deleteAllStatsCookies() class="cookiesBtns">Delete Stats Cookies</button>
             <br>
             <h5>Want to be excluded from the list of runners?<br>Message me on Discord @tryxdc</h5>
         </div>
@@ -101,7 +118,8 @@
 
     <br id="preRunners">
     
-    <script src="index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
     <script src="https://kit.fontawesome.com/eb7f00f391.js" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
 </body>
 </html>

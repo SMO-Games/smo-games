@@ -10,17 +10,23 @@ const runnerSubmitBtn = document.getElementById("runnerSubmit");
 let isValidRunner = false;
 // for error message
 const errorMessage = document.getElementById("errorMessage");
-// for handling game over popup
-const gameOverDialogue = document.getElementById("gameOverDialogue");
-const gameOverWrapper = document.querySelector(".wrapper");
-const showResultsBtn = document.getElementById("showResultsBtn")
 // for changing game over dialogue text
 const resultText = document.getElementById("resultText");
 const runnerNameText = document.getElementById("runnerNameText");
 const runnerInfoText = document.getElementById("runnerInfoText");
+// for handling game over dialogue
+const gameOverDialogue = document.getElementById("gameOverDialogue");
+const gameOverWrapper = document.querySelector(".wrapper");
+const showResultsBtn = document.getElementById("showResultsBtn")
 // for handling how to play dialogue
 const howToPlayDialogue = document.getElementById("howToPlayDialogue");
 const howToPlayWrapper = document.querySelector(".howToPlayWrapper");
+// for handling stats dialogue
+const statsDialogue = document.getElementById("statsDialogue");
+const statsWrapper = document.querySelector(".statsWrapper");
+const totalGamesText = document.getElementById("totalGames");
+const lastPlayedText = document.getElementById("lastPlayed");
+const guessChart = document.getElementById('guessChart');
 // for handling about dialogue
 const aboutDialogue = document.getElementById("aboutDialogue");
 const aboutWrapper = document.querySelector(".aboutWrapper");
@@ -61,6 +67,8 @@ const start = new Date("2026-03-20"); // actually started on the 21st, but that 
 const end = new Date(`${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`); // put in current date as YYYY-MM-DD
 const timeDifference = end - start; // find difference in milliseconds
 const daysSinceStart = Math.ceil(timeDifference / (1000 * 3600 * 24));
+// expiry date for cookie stats
+const statsExpiryDate = new Date(2145916800 * 1000) // 1 January 2038 00:00:00
 
 
 // seeded random https://medium.com/@modos.m98/creating-a-seeded-random-string-generator-in-javascript-3165aae1c2d5
@@ -82,8 +90,8 @@ document.body.style.backgroundImage = `url("backgrounds/${dailyBGImg}")`
 
 
 // create a cookie
-function setCookie(name, value){
-    document.cookie = `${name}=${value}; expires=${tomorrow.toUTCString()}; path=/`
+function setCookie(name, value, expiry){
+    document.cookie = `${name}=${value}; expires=${expiry.toUTCString()}; path=/`
 }
 // delete a cookie
 function deleteCookie(name){
@@ -102,13 +110,40 @@ function getCookie(name){
     })
     return result;
 }
-// deletes all cookies
-function deleteAllCookies(){
-    for(let i = 1; i <= allowedGuesses; i++){ // for every possible cookie
-        deleteCookie(`guess${i}`)
+// deletes all daily cookies
+function deleteAllDailyCookies(){
+    // force user to confirm once
+    let confirmed = false;
+    confirmed = confirm("This will delete your guess history from today.\nThis may break your stats.\nThis cannot be undone.\nAre you sure?");
+    if(confirmed){
+        for(let i = 1; i <= allowedGuesses; i++){ // for every possible cookie
+            deleteCookie(`guess${i}`)
+        }
+        confirmDeletedCookies.innerHTML = "<i>Daily cookies deleted</i>";
+        setTimeout(() => {confirmDeletedCookies.textContent = ""}, 2000) // reset text
     }
-    confirmDeletedCookies.innerHTML = "<i>Cookies deleted</i>";
-    setTimeout(() => {confirmDeletedCookies.textContent = ""}, 2000)
+}
+// delete all cookies
+function deleteAllStatsCookies(){
+    // force user to confirm twice
+    let confirmed = false;
+    let confirmed2 = false;
+    confirmed = confirm("WARNING: This will delete ALL your stats history.\nThis cannot be undone.\nAre you sure?");
+    if(confirmed){
+        confirmed2 = confirm("Final chance.\nAre you sure?");
+    }
+    if(confirmed2){
+        for(let i = 1; i <= allowedGuesses; i++){ // for every possible cookie
+            deleteCookie(`total${i}`);
+        }
+        deleteCookie("totalX"); // delete fails
+        deleteCookie("lastPlayed");
+        confirmDeletedCookies.innerHTML = "<i>Stats cookies deleted</i>";
+        setTimeout(() => {confirmDeletedCookies.textContent = ""}, 2000); // reset text
+    }
+    else{
+        return
+    }
 }
 
 
@@ -352,13 +387,22 @@ function addRow(rowNum){
 
 
 // prevents guessing and shows dialogue
-function endGame(){
+function endGame(isCookie){
     // prevent further guesses
     runnerInputBox.disabled = true;
     runnerSubmitBtn.disabled = true;
     // open dialogue
     gameOverDialogue.showModal();
     showResultsBtn.style.display = "inline-block"; // reveal show results button
+    // add to stats
+    if(!isCookie){ // if not a cookie, to prevent repeatedly adding on refresh
+        let currentTotal = getCookie(`total${guesses}`);
+        if(currentTotal === null){
+            currentTotal = 0;
+        }
+        setCookie(`total${guesses}`, Number(currentTotal)+1, statsExpiryDate); // update total
+        setCookie(`lastPlayed`, `${year}-${month}-${day}`, statsExpiryDate); // update last played
+    }
 }
 
 
@@ -422,10 +466,10 @@ function submitRunner(runner, isCookie){
                         // check if reached max guesses
                         let guessCounter = document.getElementById("guessCounter");
                         guessCounter.innerHTML = `<mark>Guesses: ${guesses}/${allowedGuesses}</mark>`;
-                        // end game
+                        // end game AFTER all animations finish playing + 300ms
                         if(guesses === allowedGuesses){
                             setTimeout(() => {
-                                endGame();
+                                endGame(isCookie);
                             }, (animationDelay*7)+300);
                         }
 
@@ -443,7 +487,7 @@ function submitRunner(runner, isCookie){
                                 runnerResultBox.style.backgroundColor = 'green';
                                 // end game
                                 setTimeout(() => {
-                                    endGame();
+                                    endGame(isCookie);
                                 }, (animationDelay*7)+300); // wait for all the boxes, then an extra 300ms, then display
 
                                 // makes "guess" plural only if more than 1 guess
@@ -669,7 +713,7 @@ function submitRunner(runner, isCookie){
                                 .then(() => {return animateBoxes(document.getElementById(`bestCEBox${row}`))})
 
                                 // make new cookie
-                                setCookie(`guess${row}`, runner);
+                                setCookie(`guess${row}`, runner, tomorrow);
 
                             }
                             else{ // if restored from cookie, animate all with slide up
@@ -702,7 +746,6 @@ function openGameOverDialogue(){
 function exitGameOverDialogue(){
     gameOverDialogue.close();
 };
-
 // open / close how to play dialogue
 function openHowToPlayDialogue(){
     howToPlayDialogue.showModal();
@@ -710,7 +753,13 @@ function openHowToPlayDialogue(){
 function exitHowToPlayDialogue(){
     howToPlayDialogue.close();
 }
-
+// open / close stats dialogue
+function openStatsDialogue(){
+    statsDialogue.showModal();
+}
+function exitStatsDialogue(){
+    statsDialogue.close();
+}
 // open / close about dialogue
 function openAboutDialogue(){
     aboutDialogue.showModal();
@@ -729,6 +778,11 @@ gameOverDialogue.addEventListener("click", (e) => {
 howToPlayDialogue.addEventListener("click", (e) => {
     if(!howToPlayWrapper.contains(e.target)){
         howToPlayDialogue.close();
+    }
+});
+statsDialogue.addEventListener("click", (e) => {
+    if(!statsWrapper.contains(e.target)){
+        statsDialogue.close();
     }
 });
 aboutDialogue.addEventListener("click", (e) => {
@@ -807,3 +861,89 @@ let countdownInterval = setInterval(() => {
 runnerSubmitBtn.addEventListener("click", () => {
     submitRunner(runnerInputBox.value, false);
 })
+
+
+// sum all the values in an array
+function sumArray(array){
+    let total = 0;
+    for(let i = 0; i < array.length; i++){
+        if(!(total == null) && !(total == undefined)){
+            total += Number(array[i])
+        }
+    }
+    return total;
+}
+
+
+function generateStats(){
+    const xValues = ["1", "2", "3", "4", "5", "6", "7", "X"]; // labels
+    // get all the guess totals
+    let yValues = []
+    for(let totalGuessNum = 1; totalGuessNum <= allowedGuesses; totalGuessNum++){
+        yValues.push(getCookie(`total${totalGuessNum}`))
+    };
+    yValues.push(getCookie("totalX")); // get fails
+    
+    // set text
+    let totalGames = sumArray(yValues);
+
+    // if no stats, end
+    if(totalGames === 0){
+        totalGamesText.innerHTML = "No stats";
+        return
+    }
+    // update info text
+    totalGamesText.innerHTML = `Your total games played: <b>${totalGames}</b>`;
+    lastPlayedText.innerHTML = `Last played: <b>${convertDate(getCookie("lastPlayed"))}</b>`;
+    // make chart
+    new Chart(guessChart, {
+        type: "bar",
+        // input the x and y values
+        data: {
+            labels: xValues,
+            datasets: [{
+                data: yValues,
+                backgroundColor: "#ffffff", // bar colour
+            }]
+        },
+
+        // change visual settings
+        options: {
+            // general settings
+            indexAxis: "x",
+            plugins: {
+                legend: {display: false},
+                font: {size: 16}
+            },
+            // specific to data
+            datasets:{
+                bar: { // for every bar
+                    borderRadius: 5,
+                    minBarLength: 10,
+                }
+            },
+            // remove grid lines
+            scales: {
+                x: {
+                    grid: {display: false}, // disable gridlines
+                    ticks: {
+                        color: "#ffffff", // label colour
+                    }
+                },
+                y: {
+                    grid: {display: false}, // disable gridlines
+                    ticks: {
+                        color: "#ffffff", // label colour
+                        precision: 0 
+                    },
+                }
+            }
+        }
+    });
+    Chart.defaults.font.size = 20;
+    Chart.defaults.font.weight = "bold";
+}
+
+
+generateStats(); // load stats TO DO: make this reset
+console.log(document.cookie);

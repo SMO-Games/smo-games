@@ -43,6 +43,12 @@ dialog .aboutWrapper{
     align-items: center;
     text-align: center;
 }
+dialog .statsWrapper{
+    padding: 16px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
 
 button {
     cursor: pointer;
@@ -254,6 +260,27 @@ button {
     font-size: 1.1rem;
 }
 
+#statsDialogue{
+    padding: 0;
+    color: white;
+}
+#statsDialogue[open]{
+    animation: slide-up 300ms forwards;
+}
+#statsDialogue[open]::backdrop{
+    animation: fade-in 300ms forwards;
+}
+#statsDialogue p{
+    font-size: 1.2rem;
+}
+#widenGuessChart{
+    visibility: hidden;
+}
+#guessChartContainer{
+    position: relative;
+    width: auto;
+    height: auto;
+}
 
 #aboutDialogue{
     padding: 0;
@@ -265,7 +292,7 @@ button {
 #aboutDialogue[open]::backdrop{
     animation: fade-in 300ms forwards;
 }
-#deleteCookiesBtn{
+.cookiesBtns{
     font-weight: bold;
     font-size: 1.1rem;
     color: rgb(255, 255, 255);
@@ -277,10 +304,10 @@ button {
     text-align: center;
     text-decoration: none;
 }
-#deleteCookiesBtn:hover{
+.cookiesBtns:hover{
     background-color: rgb(158, 0, 134);
 }
-#deleteCookiesBtn:active{
+.cookiesBtns:active{
     background-color: rgb(122, 0, 104);
 }
 #aboutDialogue h1{
