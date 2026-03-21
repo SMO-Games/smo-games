@@ -458,7 +458,7 @@ function submitRunner(runner, isCookie){
                                     isPlural = "es"
                                 }
 
-                                resultText.textContent = `You successfully guessed it was ${answer.name} in ${guesses} guess${isPlural}!`
+                                resultText.innerHTML = `You successfully guessed it was <b>${answer.name}</b> in ${guesses} guess${isPlural}!`
                             }
                             else{
                                 runnerLabelBox.textContent = runnerLabelBox.textContent + " ❌";
@@ -698,12 +698,6 @@ function submitRunner(runner, isCookie){
 };
 
 
-// run submitrunner when button clicked
-runnerSubmitBtn.addEventListener("click", () => {
-    submitRunner(runnerInputBox.value, false);
-})
-
-
 // open / close game over dialogue
 function openGameOverDialogue(){
     gameOverDialogue.showModal();
@@ -727,7 +721,6 @@ function openAboutDialogue(){
 function exitAboutDialogue(){
     aboutDialogue.close();
 }
-
 
 
 // lets you close the dialogue by clicking anywhere outside of it
@@ -810,4 +803,10 @@ let countdownInterval = setInterval(() => {
     else{ // if not finished
         countdown.innerHTML = `Time until next game:<br><b>${formattedTimeLeft}</b>`
     }
+})
+
+
+// run submitrunner when button clicked
+runnerSubmitBtn.addEventListener("click", () => {
+    submitRunner(runnerInputBox.value, false);
 })
