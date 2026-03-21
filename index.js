@@ -32,18 +32,33 @@ let formattedResults;
 // urls
 const runnerData = "runnerData.json";
 const gameURL = "smo-games.github.io";
+const bgImgs = [
+    "background1.jpg", "background2.jpg", "background3.jpg", 
+    "background4.jpg", "background5.jpg", "background6.jpg", 
+    "background7.jpg", "background8.jpg", "background9.jpg",
+    "background10.jpg"
+]
 // range to be within to turn yellow
 const mostRecentRange = 60;
 const bestPlacementRange = 10;
 const pbRange = 60;
 // for handling animation of results
 const animationDelay = 150;
+// for handling cookies
+const confirmDeletedCookies = document.getElementById("confirmDeletedCookies");
 // for date shenanigans
 const date = new Date();
+let tomorrow = new Date();
 const day = String(date.getDate());
-const month = String(date.getMonth() + 1);
+const month = String(date.getMonth() + 1); // month is 0 indexed, so +1
 const year = String(date.getFullYear());
-fullDate = Number(`${day.padStart(2, "0")}${month.padStart(2, "0")}${year}`);
+fullDate = Number(`${day.padStart(2, "0")}${month.padStart(2, "0")}${year}`); // format date as DDMMYYYY to use as seed
+tomorrow = tomorrow.setHours(24, 0, 0, 0); // sets new date to tomorrow midnight
+// find number of days since the game began to find game number
+const start = new Date("2026-03-20"); // actually started on the 21st, but that would 0 index it
+const end = new Date(`${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`); // put in current date as YYYY-MM-DD
+const timeDifference = end - start; // find difference in milliseconds
+const daysSinceStart = Math.ceil(timeDifference / (1000 * 3600 * 24));
 
 
 // seeded random https://medium.com/@modos.m98/creating-a-seeded-random-string-generator-in-javascript-3165aae1c2d5
@@ -55,12 +70,47 @@ function mulberry32(seed) {
         return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
 }
+// get random number to be used for daily random
 const runnerSeed = mulberry32(fullDate);
+const randomFloat = runnerSeed();
+// set daily background image
+const dailyBGImg = bgImgs[Math.floor(randomFloat*bgImgs.length)]
+document.body.style.backgroundImage = `url(${dailyBGImg})`
+
+
+// create a cookie
+function setCookie(name, value){
+    document.cookie = `${name}=${value}; ${tomorrow}; path=/`
+}
+// delete a cookie
+function deleteCookie(name){
+    document.cookie = `${name}=${null}; expires=${date.toUTCString()}; path=/`
+}
+// returns value of given cookie
+function getCookie(name){
+    const cDecoded = decodeURIComponent(document.cookie); // grabs whole cookie
+    const cArray = cDecoded.split("; "); // splits into array
+    let result = null;
+    // check each cookie for a match
+    cArray.forEach(element => {
+        if(element.indexOf(name) === 0){ // if element starts with desired cookie name
+            result = element.substring(name.length + 1) // store value in result by going from index after name=
+        }
+    })
+    return result;
+}
+// deletes all cookies
+function deleteAllCookies(){
+    for(let i = 1; i <= allowedGuesses; i++){ // for every possible cookie
+        deleteCookie(`guess${i}`)
+    }
+    confirmDeletedCookies.innerHTML = "<i>Cookies deleted</i>";
+    setTimeout(() => {confirmDeletedCookies.textContent = ""}, 2000)
+}
 
 
 // returns array of every runner
 function getRunners(){
-
     return new Promise((resolve, reject) => {
         let names = [];
         fetch(runnerData)
@@ -202,6 +252,14 @@ function getAnswer(correct_runner){
                 }
             }
         })
+        .then(() => {
+            for(let guessNum = 1; guessNum <= allowedGuesses; guessNum++){
+                currentCookie = getCookie(`guess${guessNum}`)
+                if(!(currentCookie === null)){
+                    submitRunner(currentCookie, true);
+                }
+            }
+        })
         .catch(error => console.error(error));
     return answer;
 }
@@ -209,81 +267,84 @@ function getAnswer(correct_runner){
 
 // adds row of user categories
 function addRow(rowNum){
-    let rowDiv = document.createElement("div");
+    return new Promise((resolve, reject) => {
+        let rowDiv = document.createElement("div");
 
-    // list of ids for each category
-    let boxIDs = ["runner", "nationality", "console",
-        "pb", "mostRecent", "bestMB", "bestCE"
-    ]
-    // list of actual category names
-    let categoryNames = ["Runner", "Nationality", "Console",
-        "Any% PB", "Most Recent Run", "Best MB Placement", "Best CE Placement"]
-    // list of category tooltips
-    let categoryTooltips = ["The runner's username on Speedrun.com.",
-                            "The runner's nationality set on Speedrun.com.\nTurns yellow if in the correct continent.\n\nSays [None on SRC] if the correct runner does not have a nationality selected.",
-                            "The console used in the runner's Any% 1P PB.",
-                            "The runner's Any% 1P PB.\n\nTurns yellow if within 1 minute.\n⬆️ = Slower\n⬇️ = Faster",
-                            `The date of the runner's most recently submitted run on either official SMO leaderboard.\n\nTurns yellow if within ${mostRecentRange} days.\n⬆️ = More recent\n⬇️ = Less recent`,
-                            `The runner's current best Main Leaderboard placement in any category.\n\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement`,
-                            `The runner's current best CE Leaderboard placement in any category.\n\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement\n❌ = No CE PBs`
-    ]
-    // set class and id of row box
-    rowDiv.classList.add("center", "grid-container");
-    rowDiv.id = `categoryResults${rowNum}Box`;
+        // list of ids for each category
+        let boxIDs = ["runner", "nationality", "console",
+            "pb", "mostRecent", "bestMB", "bestCE"
+        ]
+        // list of actual category names
+        let categoryNames = ["Runner", "Nationality", "Console",
+            "Any% PB", "Most Recent Run", "Best MB Placement", "Best CE Placement"]
+        // list of category tooltips
+        let categoryTooltips = ["The runner's username on Speedrun.com.",
+                                "The runner's nationality set on Speedrun.com.\nTurns yellow if in the correct continent.\n\nSays [None on SRC] if the correct runner does not have a nationality selected.",
+                                "The console used in the runner's Any% 1P PB.",
+                                "The runner's Any% 1P PB.\n\nTurns yellow if within 1 minute.\n⬆️ = Slower\n⬇️ = Faster",
+                                `The date of the runner's most recently submitted run on either official SMO leaderboard.\n\nTurns yellow if within ${mostRecentRange} days.\n⬆️ = More recent\n⬇️ = Less recent`,
+                                `The runner's current best Main Leaderboard placement in any category.\n\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement`,
+                                `The runner's current best CE Leaderboard placement in any category.\n\nTurns yellow if within ${bestPlacementRange}.\n⬆️ = Better placement\n⬇️ = Worse placement\n❌ = No CE PBs`
+        ]
+        // set class and id of row box
+        rowDiv.classList.add("center", "grid-container");
+        rowDiv.id = `categoryResults${rowNum}Box`;
 
-    // if the first added row, add it AFTER the labels
-    if(rowNum === 0){
-        rowDiv.after(document.getElementById("preRunners"))
-    }
-    // otherwise, add it BEFORE the last row
-    else{
-        document.body.insertBefore(rowDiv, document.getElementById(`categoryResults${rowNum-1}Box`));
+        // if the first added row, add it AFTER the labels
+        if(rowNum === 0){
+            rowDiv.after(document.getElementById("preRunners"))
+        }
+        // otherwise, add it BEFORE the last row
+        else{
+            document.body.insertBefore(rowDiv, document.getElementById(`categoryResults${rowNum-1}Box`));
+            
+            // add separating line between rows
+            hrElement = document.createElement("hr");
+            hrElement.classList.add("hrclass");
+
+            document.body.insertBefore(hrElement, document.getElementById(`categoryResults${rowNum-1}Box`));
+        }
         
-        // add separating line between rows
-        hrElement = document.createElement("hr");
-        hrElement.classList.add("hrclass");
+        // put row box into div
+        // document.getElementById(`categoryResults${rowNum}`).append(rowBox);
+        // for every required box, create the element and set its values
+        for(let boxID of boxIDs){
+            // current index for accessing other arrays
+            let index = boxIDs.indexOf(boxID);
 
-        document.body.insertBefore(hrElement, document.getElementById(`categoryResults${rowNum-1}Box`));
-    }
-    
-    // put row box into div
-    // document.getElementById(`categoryResults${rowNum}`).append(rowBox);
-    // for every required box, create the element and set its values
-    for(let boxID of boxIDs){
-        // current index for accessing other arrays
-        let index = boxIDs.indexOf(boxID);
+            // create category box
+            let categoryBox = document.createElement("box");
+            categoryBox.classList.add("categoryBox");
+            categoryBox.id = `${boxID}Box${rowNum}`
+            document.getElementById(rowDiv.id).append(categoryBox);
 
-        // create category box
-        let categoryBox = document.createElement("box");
-        categoryBox.classList.add("categoryBox");
-        categoryBox.id = `${boxID}Box${rowNum}`
-        document.getElementById(rowDiv.id).append(categoryBox);
+            // create category label box
+            let categoryLabelBox = document.createElement("box");
+            categoryLabelBox.classList.add("categoryLabelBox");
+            categoryLabelBox.id = `${boxID}LabelBox${rowNum}`
+            document.getElementById(categoryBox.id).append(categoryLabelBox);
 
-        // create category label box
-        let categoryLabelBox = document.createElement("box");
-        categoryLabelBox.classList.add("categoryLabelBox");
-        categoryLabelBox.id = `${boxID}LabelBox${rowNum}`
-        document.getElementById(categoryBox.id).append(categoryLabelBox);
+            // create tooltip
+            let categoryTooltip = document.createElement("button");
+            categoryTooltip.classList.add("categoryTooltip");
+            categoryTooltip.id = `${boxID}Tooltip${rowNum}`;
+            categoryTooltip.innerHTML = '?'; // add icon
+            categoryTooltip.setAttribute("data-tooltip", categoryTooltips[index]); // set tooltip to corresponding string in array
 
-        // create tooltip
-        let categoryTooltip = document.createElement("button");
-        categoryTooltip.classList.add("categoryTooltip");
-        categoryTooltip.id = `${boxID}Tooltip${rowNum}`;
-        categoryTooltip.innerHTML = '?'; // add icon
-        categoryTooltip.setAttribute("data-tooltip", categoryTooltips[index]); // set tooltip to corresponding string in array
+            document.getElementById(categoryBox.id).append(categoryTooltip);
 
-        document.getElementById(categoryBox.id).append(categoryTooltip);
+            // add label
+            categoryLabelBox.textContent = categoryNames[index];
 
-        // add label
-        categoryLabelBox.textContent = categoryNames[index];
+            // create category result box
+            let categoryResultBox = document.createElement("box");
+            categoryResultBox.classList.add("categoryResultBox");
+            categoryResultBox.id = `${boxID}ResultBox${rowNum}`
 
-        // create category result box
-        let categoryResultBox = document.createElement("box");
-        categoryResultBox.classList.add("categoryResultBox");
-        categoryResultBox.id = `${boxID}ResultBox${rowNum}`
-
-        document.getElementById(categoryBox.id).append(categoryResultBox); // add result into main
-    }
+            document.getElementById(categoryBox.id).append(categoryResultBox); // add result into main
+            resolve(true)
+        }
+    })
 }
 
 
@@ -317,324 +378,328 @@ function animateBoxes(box){
 
 
 // fills rows per submitted user
-document.getElementById("runnerSubmit").onclick = function(){
-    let runner = runnerInputBox.value; // gets value from input
-    runnerInputBox.value = ""; // empty input box
+function submitRunner(runner, isCookie){
+    return new Promise((resolve, reject) => {
+        runnerInputBox.value = ""; // empty input box
 
-    // ignore input if empty
-    if(runner.trim() === ""){
-        errorMessage.textContent = "Please enter a runner";
-        return
-    }
+        // ignore input if empty
+        if(runner.trim() === ""){
+            errorMessage.textContent = "Please enter a runner";
+            return
+        }
 
-    // ignore input if already guessed
-    if(inputs.includes(runner)){
-        errorMessage.textContent = "Runner already guessed";
-        return
-    }
-    else{
-        errorMessage.textContent = "";
-    }
-    inputs.push(runner);
+        // ignore input if already guessed
+        if(inputs.includes(runner)){
+            errorMessage.textContent = "Runner already guessed";
+            return
+        }
+        else{
+            errorMessage.textContent = ""; // clear error message if no error
+        }
+        inputs.push(runner); // add input to already guessed runners
 
-    // increase guesses, end if max guesses
+        // increase guesses, end if max guesses
 
-    let yellow_background = "rgb(255, 191, 0)"; // reusable yellow colour
+        let yellow_background = "rgb(255, 191, 0)"; // reusable yellow colour
 
-    // fetches all runner data
-    fetch(runnerData)
-        .then(response => response.json())
-        .then(values => {
-            for(let value of values){
+        // fetches all runner data
+        fetch(runnerData)
+            .then(response => response.json())
+            .then(values => {
+                for(let value of values){
 
-                // checks if entered runner exists
-                isValidRunner = values.some((obj) => obj.name.toLowerCase() === runner.toLowerCase());
-                if(!isValidRunner){
-                    errorMessage.textContent = "Not a valid runner";
-                    break
-                }  
+                    // checks if entered runner exists
+                    isValidRunner = values.some((obj) => obj.name.toLowerCase() === runner.toLowerCase());
+                    if(!isValidRunner){
+                        errorMessage.textContent = "Not a valid runner";
+                        break
+                    }  
 
-                if(value.name.toLowerCase() === runner.toLowerCase()){ // finds inputted runner
+                    if(value.name.toLowerCase() === runner.toLowerCase()){ // finds inputted runner
 
-                    guesses++;
+                        guesses++;
 
-                    // check if reached max guesses
-                    let guessCounter = document.getElementById("guessCounter");
-                    guessCounter.textContent = `Guesses: ${guesses}/${allowedGuesses}`;
-                    // end game
-                    if(guesses === allowedGuesses){
-                        setTimeout(() => {
-                            endGame();
-                        }, (animationDelay*7)+300);
-                    }
-
-                    // increase row count and add the row
-                    row++;
-                    addRow(row);
-                    isValidRunner = true;
-
-                    // compare names (check if guess is correct)
-                    let runnerLabelBox = document.getElementById(`runnerLabelBox${row}`);
-                    let runnerResultBox = document.getElementById(`runnerResultBox${row}`);
-                    if(value.name === answer.name){
-                        runnerLabelBox.textContent = runnerLabelBox.textContent + " ✅";
-                        runnerResultBox.style.backgroundColor = 'green';
+                        // check if reached max guesses
+                        let guessCounter = document.getElementById("guessCounter");
+                        guessCounter.textContent = `Guesses: ${guesses}/${allowedGuesses}`;
                         // end game
-                        setTimeout(() => {
-                            endGame();
-                        }, (animationDelay*7)+300); // wait for all the boxes, then an extra 300ms, then display
-
-                        // makes "guess" plural only if more than 1 guess
-                        let isPlural;
-                        if(guesses === 1){
-                            isPlural = "";
-                        }
-                        else{
-                            isPlural = "es"
-                        }
-
-                        resultText.textContent = `You successfully guessed it was ${answer.name} in ${guesses} guess${isPlural}!`
-                    }
-                    else{
-                        runnerLabelBox.textContent = runnerLabelBox.textContent + " ❌";
-                        runnerResultBox.style.backgroundColor = 'red';
-                        // if max guesses and still wrong, set guesses to X
                         if(guesses === allowedGuesses){
-                            guesses = "X";
-                            resultText.textContent = `You didn't get the answer right ☹️ The runner was:`
-                            runnerNameText.textContent =  `${answer.name}`
+                            setTimeout(() => {
+                                endGame();
+                            }, (animationDelay*7)+300);
                         }
-                    }
+
+                        // increase row count and add the row
+                        row++;
+                        addRow(row)
+                        .then(() => {
+                            isValidRunner = true;
+
+                            // compare names (check if guess is correct)
+                            let runnerLabelBox = document.getElementById(`runnerLabelBox${row}`);
+                            let runnerResultBox = document.getElementById(`runnerResultBox${row}`);
+                            if(value.name === answer.name){
+                                runnerLabelBox.textContent = runnerLabelBox.textContent + " ✅";
+                                runnerResultBox.style.backgroundColor = 'green';
+                                // end game
+                                setTimeout(() => {
+                                    endGame();
+                                }, (animationDelay*7)+300); // wait for all the boxes, then an extra 300ms, then display
+
+                                // makes "guess" plural only if more than 1 guess
+                                let isPlural;
+                                if(guesses === 1){
+                                    isPlural = "";
+                                }
+                                else{
+                                    isPlural = "es"
+                                }
+
+                                resultText.textContent = `You successfully guessed it was ${answer.name} in ${guesses} guess${isPlural}!`
+                            }
+                            else{
+                                runnerLabelBox.textContent = runnerLabelBox.textContent + " ❌";
+                                runnerResultBox.style.backgroundColor = 'red';
+                                // if max guesses and still wrong, set guesses to X
+                                if(guesses === allowedGuesses){
+                                    guesses = "X";
+                                    resultText.textContent = `You didn't get the answer right ☹️ The runner was:`
+                                    runnerNameText.textContent =  `${answer.name}`
+                                }
+                            }
 
 
-                    // compare nationality
-                    let nationalityLabelBox = document.getElementById(`nationalityLabelBox${row}`)
-                    let nationalityResultBox = document.getElementById(`nationalityResultBox${row}`);
-                    let formatted_country = `${value.country[1]} [${value.country[2]}]`;
+                            // compare nationality
+                            let nationalityLabelBox = document.getElementById(`nationalityLabelBox${row}`)
+                            let nationalityResultBox = document.getElementById(`nationalityResultBox${row}`);
+                            let formatted_country = `${value.country[1]} [${value.country[2]}]`;
 
-                    // if inputted user has no flag on src
-                    if(value.country[0] === null){
-                        formatted_country = `No Country on SRC`;
+                            // if inputted user has no flag on src
+                            if(value.country[0] === null){
+                                formatted_country = `No Country on SRC`;
 
-                        if(answer.country[0] === null){ // if answer also doesn't, make green
-                            nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ✅";
-                            gameResults += "🟩"
-                            nationalityResultBox.style.backgroundColor = 'green';
-                        }
-                        else{ // if answer does have a country, make red
-                            nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ❌";
-                            gameResults += "🟥"
-                            nationalityResultBox.style.backgroundColor = 'red';
-                        }
-                    }
-                    // if answer has no flag on src BUT inputted user does
-                    else if(answer.country[0] === null){
-                        nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ❌ [None on SRC]";
-                        gameResults += "🟥"
-                        nationalityResultBox.style.backgroundColor = 'red';
-                    }
-                    // if both have countries
-                    else{
-                            // if correct sovereignty, green
-                        if(value.country[2].toUpperCase() === answer.country[2].toUpperCase()){
-                            nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ✅";
-                            gameResults += "🟩"
-                            nationalityResultBox.style.backgroundColor = 'green';
-                        }
-                        // if correct continent, yellow
-                        else if(value.country[3] === answer.country[3]){
-                            nationalityLabelBox.textContent = nationalityLabelBox.textContent + " 🌍";
-                            gameResults += "🟨"
-                            nationalityResultBox.style.backgroundColor = yellow_background;
-                        }
-                        // if wrong continent
-                        else{
-                            nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ❌";
-                            gameResults += "🟥"
-                            nationalityResultBox.style.backgroundColor = "red";
-                        }
-                    }
-
-
-                    // compare consoles
-                    let consoleLabelBox = document.getElementById(`consoleLabelBox${row}`)
-                    let consoleResultBox = document.getElementById(`consoleResultBox${row}`)
-                    if(value.console === answer.console){
-                        consoleLabelBox.textContent = consoleLabelBox.textContent + " ✅";
-                        gameResults += "🟩"
-                        consoleResultBox.style.backgroundColor = 'green';
-                    }
-                    else{
-                        consoleLabelBox.textContent = consoleLabelBox.textContent + " ❌";
-                        gameResults += "🟥"
-                        consoleResultBox.style.backgroundColor = 'red';
-                    }
+                                if(answer.country[0] === null){ // if answer also doesn't, make green
+                                    nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ✅";
+                                    gameResults += "🟩"
+                                    nationalityResultBox.style.backgroundColor = 'green';
+                                }
+                                else{ // if answer does have a country, make red
+                                    nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ❌";
+                                    gameResults += "🟥"
+                                    nationalityResultBox.style.backgroundColor = 'red';
+                                }
+                            }
+                            // if answer has no flag on src BUT inputted user does
+                            else if(answer.country[0] === null){
+                                nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ❌ [None on SRC]";
+                                gameResults += "🟥"
+                                nationalityResultBox.style.backgroundColor = 'red';
+                            }
+                            // if both have countries
+                            else{
+                                    // if correct sovereignty, green
+                                if(value.country[2].toUpperCase() === answer.country[2].toUpperCase()){
+                                    nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ✅";
+                                    gameResults += "🟩"
+                                    nationalityResultBox.style.backgroundColor = 'green';
+                                }
+                                // if correct continent, yellow
+                                else if(value.country[3] === answer.country[3]){
+                                    nationalityLabelBox.textContent = nationalityLabelBox.textContent + " 🌍";
+                                    gameResults += "🟨"
+                                    nationalityResultBox.style.backgroundColor = yellow_background;
+                                }
+                                // if wrong continent
+                                else{
+                                    nationalityLabelBox.textContent = nationalityLabelBox.textContent + " ❌";
+                                    gameResults += "🟥"
+                                    nationalityResultBox.style.backgroundColor = "red";
+                                }
+                            }
 
 
-                    // compare pbs
-                    // format pb from seconds to mm:ss and add comparison symbol
-                    let formatted_pb = convertSeconds(value.pb);
-                    let pbLabelBox = document.getElementById(`pbLabelBox${row}`)
-                    let pbResultBox = document.getElementById(`pbResultBox${row}`);
-
-                    // green if correct, yellow if within a minute, red if wrong by a minute or more
-                    pbDifference = Math.abs(value.pb - answer.pb)
-                    if(value.pb === answer.pb){
-                        pbResultBox.style.backgroundColor = "green";
-                    }
-                    else if(pbDifference >= pbRange){
-                        pbResultBox.style.backgroundColor = "red";
-                    }
-                    else{
-                        pbResultBox.style.backgroundColor = yellow_background;
-                    }
-
-                    gameResults += compareValues(value.pb, answer.pb, pbLabelBox, false); // add comparison symbol
-                    
-
-                    // compare most recent
-                    // convert dates to date objects, compare dates and add comparison symbol
-                    let currentDate = new Date(value.most_recent_run);
-                    let answerDate = new Date(answer.most_recent_run);
-                    // use value.most_recent_run to already have date as YYYY-MM-DD
-
-                    // change background colour
-                    let mostRecentLabelBox = document.getElementById(`mostRecentLabelBox${row}`);
-                    let mostRecentResultBox = document.getElementById(`mostRecentResultBox${row}`);
-
-                    let dateDifference = Math.abs(currentDate - answerDate);
-                    dateDifference = dateDifference/1000/60/60/24 // convert milliseconds to days
-                    if(dateDifference === 0){
-                        mostRecentResultBox.style.backgroundColor = "green";
-                    }
-                    else if(dateDifference >= mostRecentRange){
-                        mostRecentResultBox.style.backgroundColor = "red";
-                    }
-                    else{
-                        mostRecentResultBox.style.backgroundColor = yellow_background;
-                    }
-                    gameResults += compareValues(currentDate, answerDate, mostRecentLabelBox, false); // update delta
+                            // compare consoles
+                            let consoleLabelBox = document.getElementById(`consoleLabelBox${row}`)
+                            let consoleResultBox = document.getElementById(`consoleResultBox${row}`)
+                            if(value.console === answer.console){
+                                consoleLabelBox.textContent = consoleLabelBox.textContent + " ✅";
+                                gameResults += "🟩"
+                                consoleResultBox.style.backgroundColor = 'green';
+                            }
+                            else{
+                                consoleLabelBox.textContent = consoleLabelBox.textContent + " ❌";
+                                gameResults += "🟥"
+                                consoleResultBox.style.backgroundColor = 'red';
+                            }
 
 
-                    // compare MB and CE placements
-                    // compare mb leaderboard placement and add comparison symbol
-                    let currentBest = value.best_mb_placement[0];
-                    let answerBest = answer.best_mb_placement;
+                            // compare pbs
+                            // format pb from seconds to mm:ss and add comparison symbol
+                            let formatted_pb = convertSeconds(value.pb);
+                            let pbLabelBox = document.getElementById(`pbLabelBox${row}`)
+                            let pbResultBox = document.getElementById(`pbResultBox${row}`);
 
-                    let bestMBLabelBox = document.getElementById(`bestMBLabelBox${row}`);
-                    let bestMBResultBox = document.getElementById(`bestMBResultBox${row}`);
+                            // green if correct, yellow if within a minute, red if wrong by a minute or more
+                            pbDifference = Math.abs(value.pb - answer.pb)
+                            if(value.pb === answer.pb){
+                                pbResultBox.style.backgroundColor = "green";
+                            }
+                            else if(pbDifference >= pbRange){
+                                pbResultBox.style.backgroundColor = "red";
+                            }
+                            else{
+                                pbResultBox.style.backgroundColor = yellow_background;
+                            }
 
-                    // change background colour
-                    let bestMBDifference = Math.abs(currentBest - answerBest);
-                    if(bestMBDifference === 0){
-                        bestMBResultBox.style.backgroundColor = "green";
-                    }
-                    else if(bestMBDifference >= bestPlacementRange){
-                        bestMBResultBox.style.backgroundColor = "red";
-                    }
-                    else{
-                        bestMBResultBox.style.backgroundColor = yellow_background;
-                    }
-                    gameResults += compareValues(currentBest, answerBest, bestMBLabelBox, true); // update delta symbol
+                            gameResults += compareValues(value.pb, answer.pb, pbLabelBox, false); // add comparison symbol
+                            
 
-                    // compare ce leaderboard placement and add comparison symbol
-                    currentBest = value.best_ce_placement[0];
-                    answerBest = answer.best_ce_placement;
+                            // compare most recent
+                            // convert dates to date objects, compare dates and add comparison symbol
+                            let currentDate = new Date(value.most_recent_run);
+                            let answerDate = new Date(answer.most_recent_run);
+                            // use value.most_recent_run to already have date as YYYY-MM-DD
 
-                    let bestCELabelBox = document.getElementById(`bestCELabelBox${row}`)
-                    let bestCEResultBox = document.getElementById(`bestCEResultBox${row}`);
+                            // change background colour
+                            let mostRecentLabelBox = document.getElementById(`mostRecentLabelBox${row}`);
+                            let mostRecentResultBox = document.getElementById(`mostRecentResultBox${row}`);
 
-                    // change background colour
-                    let bestCEDifference = Math.abs(currentBest - answerBest);
-                    if(bestCEDifference === 0){
-                        bestCEResultBox.style.backgroundColor = "green";
-                    }
-                    else if(bestCEDifference >= bestPlacementRange){
-                        bestCEResultBox.style.backgroundColor = "red";
-                    }
-                    else{
-                        bestCEResultBox.style.backgroundColor = yellow_background;
-                    }
+                            let dateDifference = Math.abs(currentDate - answerDate);
+                            dateDifference = dateDifference/1000/60/60/24 // convert milliseconds to days
+                            if(dateDifference === 0){
+                                mostRecentResultBox.style.backgroundColor = "green";
+                            }
+                            else if(dateDifference >= mostRecentRange){
+                                mostRecentResultBox.style.backgroundColor = "red";
+                            }
+                            else{
+                                mostRecentResultBox.style.backgroundColor = yellow_background;
+                            }
+                            gameResults += compareValues(currentDate, answerDate, mostRecentLabelBox, false); // update delta
 
-                    // if runner has no CE pb:
-                    // if answer also has no CE pb, display with check
-                    // otherwise display with X
-                    if(String(currentBest).startsWith("null")){
-                        if(String(answerBest).startsWith("null")){
-                            bestCELabelBox.textContent = "Best CE Placement ✅";
-                            gameResults += "🟩"
-                            value.best_ce_placement[0] = "No CE PBs";
-                            bestCEResultBox.style.backgroundColor = "green";
-                        }
-                        else{
-                            bestCELabelBox.textContent = "Best CE Placement ❌";
-                            gameResults += "🟥"
-                            value.best_ce_placement[0] = "No CE PBs";
-                            bestCEResultBox.style.backgroundColor = "red";
-                        }
-                    }
-                    // if ONLY the answer doesn't have a CE pb AND the input DOES, always display red
-                    else if(String(answerBest).startsWith("null")){
-                        if(!String(currentBest).startsWith("null")){
-                            bestCELabelBox.textContent = bestCELabelBox.textContent + " ❌"
-                            gameResults += "🟥"
-                            bestCEResultBox.style.backgroundColor = "red";
-                        }
-                    }
-                    // ONLY update delta if both have a pb
-                    else{
-                        gameResults += compareValues(currentBest, answerBest, bestCELabelBox, true); // update delta
-                    }
-                    
 
-                    // adds values to all the boxes
-                    runnerResultBox.textContent = value.name;
-                    nationalityResultBox.textContent = formatted_country;
-                    consoleResultBox.textContent = value.console;
-                    pbResultBox.textContent = formatted_pb;
-                    mostRecentResultBox.textContent = convertDate(value.most_recent_run);
-                    bestMBResultBox.textContent = value.best_mb_placement[0];
-                    bestCEResultBox.textContent = value.best_ce_placement[0];
+                            // compare MB and CE placements
+                            // compare mb leaderboard placement and add comparison symbol
+                            let currentBest = value.best_mb_placement[0];
+                            let answerBest = answer.best_mb_placement;
 
-                    // animates each result box in sequence
-                    animateBoxes(document.getElementById(`runnerBox${row}`))
-                    .then(() => {return animateBoxes(document.getElementById(`nationalityBox${row}`))})
-                    .then(() => {return animateBoxes(document.getElementById(`consoleBox${row}`))})
-                    .then(() => {return animateBoxes(document.getElementById(`pbBox${row}`))})
-                    .then(() => {return animateBoxes(document.getElementById(`mostRecentBox${row}`))})
-                    .then(() => {return animateBoxes(document.getElementById(`bestMBBox${row}`))})
-                    .then(() => {return animateBoxes(document.getElementById(`bestCEBox${row}`))})
+                            let bestMBLabelBox = document.getElementById(`bestMBLabelBox${row}`);
+                            let bestMBResultBox = document.getElementById(`bestMBResultBox${row}`);
 
-                    gameResults += "\n" // new line to game results for copying at the end
+                            // change background colour
+                            let bestMBDifference = Math.abs(currentBest - answerBest);
+                            if(bestMBDifference === 0){
+                                bestMBResultBox.style.backgroundColor = "green";
+                            }
+                            else if(bestMBDifference >= bestPlacementRange){
+                                bestMBResultBox.style.backgroundColor = "red";
+                            }
+                            else{
+                                bestMBResultBox.style.backgroundColor = yellow_background;
+                            }
+                            gameResults += compareValues(currentBest, answerBest, bestMBLabelBox, true); // update delta symbol
 
-                    break
-                }                
-            }
-        })
-        .catch(error => console.error(error));
+                            // compare ce leaderboard placement and add comparison symbol
+                            currentBest = value.best_ce_placement[0];
+                            answerBest = answer.best_ce_placement;
+
+                            let bestCELabelBox = document.getElementById(`bestCELabelBox${row}`)
+                            let bestCEResultBox = document.getElementById(`bestCEResultBox${row}`);
+
+                            // change background colour
+                            let bestCEDifference = Math.abs(currentBest - answerBest);
+                            if(bestCEDifference === 0){
+                                bestCEResultBox.style.backgroundColor = "green";
+                            }
+                            else if(bestCEDifference >= bestPlacementRange){
+                                bestCEResultBox.style.backgroundColor = "red";
+                            }
+                            else{
+                                bestCEResultBox.style.backgroundColor = yellow_background;
+                            }
+
+                            // if runner has no CE pb:
+                            // if answer also has no CE pb, display with check
+                            // otherwise display with X
+                            if(String(currentBest).startsWith("null")){
+                                if(String(answerBest).startsWith("null")){
+                                    bestCELabelBox.textContent = "Best CE Placement ✅";
+                                    gameResults += "🟩"
+                                    value.best_ce_placement[0] = "No CE PBs";
+                                    bestCEResultBox.style.backgroundColor = "green";
+                                }
+                                else{
+                                    bestCELabelBox.textContent = "Best CE Placement ❌";
+                                    gameResults += "🟥"
+                                    value.best_ce_placement[0] = "No CE PBs";
+                                    bestCEResultBox.style.backgroundColor = "red";
+                                }
+                            }
+                            // if ONLY the answer doesn't have a CE pb AND the input DOES, always display red
+                            else if(String(answerBest).startsWith("null")){
+                                if(!String(currentBest).startsWith("null")){
+                                    bestCELabelBox.textContent = bestCELabelBox.textContent + " ❌"
+                                    gameResults += "🟥"
+                                    bestCEResultBox.style.backgroundColor = "red";
+                                }
+                            }
+                            // ONLY update delta if both have a pb
+                            else{
+                                gameResults += compareValues(currentBest, answerBest, bestCELabelBox, true); // update delta
+                            }
+                            
+
+                            // adds values to all the boxes
+                            runnerResultBox.textContent = value.name;
+                            nationalityResultBox.textContent = formatted_country;
+                            consoleResultBox.textContent = value.console;
+                            pbResultBox.textContent = formatted_pb;
+                            mostRecentResultBox.textContent = convertDate(value.most_recent_run);
+                            bestMBResultBox.textContent = value.best_mb_placement[0];
+                            bestCEResultBox.textContent = value.best_ce_placement[0];
+
+                            // animates each result box in sequence
+                            if(!isCookie){ // if an actual guess, not being restored from cookie -> animate
+                                animateBoxes(document.getElementById(`runnerBox${row}`))
+                                .then(() => {return animateBoxes(document.getElementById(`nationalityBox${row}`))})
+                                .then(() => {return animateBoxes(document.getElementById(`consoleBox${row}`))})
+                                .then(() => {return animateBoxes(document.getElementById(`pbBox${row}`))})
+                                .then(() => {return animateBoxes(document.getElementById(`mostRecentBox${row}`))})
+                                .then(() => {return animateBoxes(document.getElementById(`bestMBBox${row}`))})
+                                .then(() => {return animateBoxes(document.getElementById(`bestCEBox${row}`))})
+
+                                // make new cookie
+                                setCookie(`guess${row}`, runner)
+                                console.log(document.cookie);
+
+                            }
+                            else{ // if restored from cookie, just make them all visible
+                                document.getElementById(`runnerBox${row}`).style.opacity = 1;
+                                document.getElementById(`nationalityBox${row}`).style.opacity = 1;
+                                document.getElementById(`consoleBox${row}`).style.opacity = 1;
+                                document.getElementById(`pbBox${row}`).style.opacity = 1;
+                                document.getElementById(`mostRecentBox${row}`).style.opacity = 1;
+                                document.getElementById(`bestMBBox${row}`).style.opacity = 1;
+                                document.getElementById(`bestCEBox${row}`).style.opacity = 1;
+                            } 
+
+                            gameResults += "\n" // new line to game results for copying at the end
+                        })
+                        break
+                    }                
+                }
+            })
+            .catch(error => console.error(error));
+        resolve(true)
+    })
+    
 };
 
 
-// get random runner and set it as answer
-getRunners().then(runners => {
-    
-    runnerTextLine = "";
-    runnerText = "";
-    count = 0;
-    runners.forEach(runner => {
-        count++;
-        runnerTextLine += `${runner}, `;
-        if(count % 20 === 0){
-            runnerText += `${runnerTextLine}\n`
-            runnerTextLine = ""
-        }
-    })
-    
-
-    let answer = runners[Math.floor(runnerSeed()*runners.length)];
-    document.getElementById("timeTest").textContent = `${fullDate} - ${answer}`;
-    getAnswer(answer);
-});
+// run submitrunner when button clicked
+runnerSubmitBtn.addEventListener("click", () => {
+    submitRunner(runnerInputBox.value, false);
+})
 
 
 // open / close game over dialogue
@@ -693,29 +758,33 @@ runnerInputBox.addEventListener("keypress", function(event) {
 // copy results to clipboard when button clicked
 // normal results
 function copyResults(resultsType){
-    formattedResults = `Guess the SMO Runner [${guesses}/${allowedGuesses}]\n${gameResults}${gameURL}
-                            \nTESTING ONLY - Answer: ${answer.name}`;
+    formattedResults = `Guess the SMO Runner ${daysSinceStart} [${guesses}/${allowedGuesses}]\n${gameResults}${gameURL}`;
     navigator.clipboard.writeText(formattedResults);
     confirmCopied.textContent = "Results copied!";
     setTimeout(() => {confirmCopied.textContent = ""}, 2000) // remove results copied text after 2 seconds
 };
 // twitch chat results
 function copyResultsTwitch(){
-    formattedResults = `Guess the SMO Runner [${guesses}/${allowedGuesses}] --- ${gameResults.replace(/[\r\n]+/gm, " | ")}${gameURL.replace(".", " ").replace(".", " ")}`// replace new lines with |, avoid link detection 
+    formattedResults = `Guess the SMO Runner ${daysSinceStart} [${guesses}/${allowedGuesses}] --- ${gameResults.replace(/[\r\n]+/gm, " | ")}${gameURL.replace(".", " ").replace(".", " ")}`// replace new lines with |, avoid link detection 
     navigator.clipboard.writeText(formattedResults);
     confirmCopied.textContent = "Twitch results copied!";
     setTimeout(() => {confirmCopied.textContent = ""}, 2000) // remove results copied text after 2 seconds
 }
 
 
-// add all runners to datalist for dropdown
+// add all runners to datalist for dropdown and set answer
 getRunners().then(runners => {
     let list = document.getElementById("runners");
 
+    // for every runner, add a datalist option
     for (let i = 0; i < runners.length; i++) {
         let option = document.createElement("option");
         let text = document.createTextNode(runners[i]);
         option.appendChild(text);
         list.appendChild(option);
     }
+
+    // set answer to daily random runner
+    let answer = runners[Math.floor(randomFloat*runners.length)];
+    getAnswer(answer);
 })

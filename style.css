@@ -7,7 +7,6 @@ body{
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url(background2.jpg);
 }
 .center{
     justify-content: center;
@@ -254,6 +253,24 @@ button {
 }
 #aboutDialogue[open]::backdrop{
     animation: fade-in 300ms forwards;
+}
+#deleteCookiesBtn{
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: rgb(255, 255, 255);
+    background-color: rgb(185, 0, 158);
+    border: 3px solid black;
+    border-radius: 20px;
+    margin-right: 5px;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+}
+#deleteCookiesBtn:hover{
+    background-color: rgb(158, 0, 134);
+}
+#deleteCookiesBtn:active{
+    background-color: rgb(122, 0, 104);
 }
 #aboutDialogue h1{
     margin-top: 5px;
