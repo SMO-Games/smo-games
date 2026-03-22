@@ -499,6 +499,8 @@ button {
 @media only screen and (max-width: 600px){
     .categoryTooltip{
         left: 117px;
-        width: 7px;
+        width: 12px;
+        text-align: center;
+        padding: 0;
     }
 }
