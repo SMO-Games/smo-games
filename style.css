@@ -466,6 +466,7 @@ button {
     border-radius: 50%;
     border-style: none;
 }
+/* tooltip styling */
 [data-tooltip]::after{
     position: absolute;
     width: 200px;
@@ -488,11 +489,13 @@ button {
     transform: translateY(10px);
     transition: opacity 0.3s, transform 0.2s;
 }
+/* add tooltip on hover */
 [data-tooltip]:hover::after{
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
+/* if on mobile, make tooltip regular size */
 @media only screen and (max-width: 600px){
     .categoryTooltip{
         left: 130px;
