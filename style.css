@@ -500,9 +500,5 @@ button {
     .categoryTooltip{
         left: 130px;
         width: 12px;
-        text-align: center;
-        padding: 0;
-        padding-left: 3px;
-        padding-right: 3px;
     }
 }
