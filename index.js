@@ -694,16 +694,16 @@ function submitRunner(runner, isCookie){
                             
 
                             // adds values to all the boxes
-                            runnerResultBox.textContent = value.name;
-                            nationalityResultBox.textContent = formatted_country;
-                            consoleResultBox.textContent = value.console;
-                            pbResultBox.textContent = formatted_pb;
-                            mostRecentResultBox.textContent = convertDate(value.most_recent_run);
-                            bestMBResultBox.textContent = value.best_mb_placement[0];
-                            bestCEResultBox.textContent = value.best_ce_placement[0];
+                            runnerResultBox.innerHTML = `<mark>${value.name}</mark>`;
+                            nationalityResultBox.innerHTML = `<mark>${formatted_country}</mark>`;
+                            consoleResultBox.innerHTML = `<mark>${value.console}</mark>`;
+                            pbResultBox.innerHTML = `<mark>${formatted_pb}</mark>`;
+                            mostRecentResultBox.innerHTML = `<mark>${convertDate(value.most_recent_run)}</mark>`;
+                            bestMBResultBox.innerHTML = `<mark>${value.best_mb_placement[0]}</mark>`
+                            bestCEResultBox.innerHTML = `<mark>${value.best_ce_placement[0]}</mark>`
 
-                            // animates each result box in sequence
-                            if(!isCookie){ // if an actual guess, not being restored from cookie -> animate
+                            // animates each result box
+                            if(!isCookie){ // if an actual guess, not being restored from cookie -> animate in sequence
                                 animateBoxes(document.getElementById(`runnerBox${row}`))
                                 .then(() => {return animateBoxes(document.getElementById(`nationalityBox${row}`))})
                                 .then(() => {return animateBoxes(document.getElementById(`consoleBox${row}`))})
@@ -712,7 +712,7 @@ function submitRunner(runner, isCookie){
                                 .then(() => {return animateBoxes(document.getElementById(`bestMBBox${row}`))})
                                 .then(() => {return animateBoxes(document.getElementById(`bestCEBox${row}`))})
 
-                                // make new cookie
+                                // make new cookie for the guess
                                 setCookie(`guess${row}`, runner, tomorrow);
 
                             }
