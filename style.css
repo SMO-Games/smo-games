@@ -498,8 +498,10 @@ button {
 /* if on mobile, make tooltip regular size */
 @media only screen and (max-width: 600px){
     .categoryTooltip{
-        left: 114px;
+        left: 116px;
+        bottom: 162px;
         width: 15px;
         height: 35px;
+        font-size: 1.3rem;
     }
 }
