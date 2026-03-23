@@ -281,7 +281,7 @@ function getAnswer(correct_runner){
 
                     // update runner info text to answer
                     runnerInfoText.innerHTML = `<h3>Runner Info</h3>
-                                                <b>Country:</b> ${formatted_country}\n
+                                                <b>Nationality:</b> ${formatted_country}\n
                                                 <b>Console:</b> ${answer.console}\n
                                                 <b>Any% PB:</b> ${convertSeconds(answer.pb)}\n
                                                 <b>Most Recent Run:</b> ${convertDate(answer.most_recent_run)}\n
