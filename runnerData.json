@@ -825,6 +825,31 @@
     "console": "Switch 1"
   },
   {
+    "name": "userodyssey",
+    "id": "jo10r67x",
+    "country": [
+      "es",
+      "Spain",
+      "ES",
+      "EU"
+    ],
+    "name_colour": "#EE4444",
+    "best_mb_placement": [
+      24,
+      "wdmw4e42"
+    ],
+    "best_ce_placement": [
+      23,
+      "7kjp3wzk"
+    ],
+    "most_recent_run": "2026-03-01",
+    "twitch_handle": null,
+    "twitter_handle": null,
+    "profile_picture": "https://www.speedrun.com/static/user/jo10r67x/image?v=c6b638f",
+    "pb": 3488,
+    "console": "Switch 2"
+  },
+  {
     "name": "Jadyboyy",
     "id": "j26zg26x",
     "country": [
@@ -835,7 +860,7 @@
     ],
     "name_colour": "#44BBEE",
     "best_mb_placement": [
-      34,
+      35,
       "w20w1lzd"
     ],
     "best_ce_placement": [
@@ -860,7 +885,7 @@
     ],
     "name_colour": "#EF8241",
     "best_mb_placement": [
-      35,
+      36,
       "w20w1lzd"
     ],
     "best_ce_placement": [
@@ -1010,7 +1035,7 @@
     ],
     "name_colour": "#FFFFFF",
     "best_mb_placement": [
-      40,
+      41,
       "w20w1lzd"
     ],
     "best_ce_placement": [
@@ -1097,31 +1122,6 @@
     "twitter_handle": "Gamer207",
     "profile_picture": null,
     "pb": 3516,
-    "console": "Switch 2"
-  },
-  {
-    "name": "userodyssey",
-    "id": "jo10r67x",
-    "country": [
-      "es",
-      "Spain",
-      "ES",
-      "EU"
-    ],
-    "name_colour": "#EE4444",
-    "best_mb_placement": [
-      24,
-      "wdmw4e42"
-    ],
-    "best_ce_placement": [
-      23,
-      "7kjp3wzk"
-    ],
-    "most_recent_run": "2025-12-27",
-    "twitch_handle": null,
-    "twitter_handle": null,
-    "profile_picture": "https://www.speedrun.com/static/user/jo10r67x/image?v=c6b638f",
-    "pb": 3517,
     "console": "Switch 2"
   },
   {
@@ -2504,7 +2504,7 @@
     "id": "18vqg45j",
     "country": [
       "gb",
-      "Wales",
+      "United Kingdom",
       "GB",
       "EU"
     ],
