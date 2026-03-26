@@ -26,7 +26,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: Install all necessary packages
-      run: pip install os
+      run: pip install pandas
     - name: Fetch current runner data
       run: python3 testrename.py
     - name: Commit and push any changes
