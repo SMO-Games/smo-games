@@ -36,7 +36,7 @@ const confirmCopied = document.getElementById("confirmCopied");
 let gameResults = "";
 let formattedResults;
 // urls
-const runnerData = "runnerData.json";
+let runnerData = "backup-data.json";
 const gameURL = "smo-games.github.io";
 const bgImgs = [
     "background1.jpg", "background2.jpg", "background3.jpg", 
@@ -62,6 +62,7 @@ const day = String(date.getDate());
 const month = String(date.getMonth() + 1); // month is 0 indexed, so +1
 const year = String(date.getFullYear());
 fullDate = Number(`${day.padStart(2, "0")}${month.padStart(2, "0")}${year}`); // format date as DDMMYYYY to use as seed
+fileDate = `${day.padStart(2, "0")}-${month.padStart(2, "0")}-${year}-data.json`; // name for current date file data
 // find number of days since the game began to find game number
 const start = new Date("2026-03-20"); // actually started on the 21st, but that would 0 index it
 const end = new Date(`${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`); // put in current date as YYYY-MM-DD
@@ -69,6 +70,9 @@ const timeDifference = end - start; // find difference in milliseconds
 const daysSinceStart = Math.ceil(timeDifference / (1000 * 3600 * 24));
 // expiry date for cookie stats
 const statsExpiryDate = new Date(2145916800 * 1000) // 1 January 2038 00:00:00
+
+
+runnerData = fileDate;
 
 
 // seeded random https://medium.com/@modos.m98/creating-a-seeded-random-string-generator-in-javascript-3165aae1c2d5

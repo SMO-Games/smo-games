@@ -1,12 +1,16 @@
 import requests
-from datetime import date
+from datetime import date, datetime, timezone, timedelta
 import json
 import math
 import pandas as pd
+import os
 
 
 # base url that all links begin with
 base = "https://www.speedrun.com/api/v1"
+
+# file urls
+backup_url = "backup-data.json"
 
 # ids for leaderboards and categories
 mb_id = "76r55vd8"
@@ -25,6 +29,16 @@ runner_exclusions = [{
     "name": "MisterVAMOS_",
     "id": "8w3rvgvj"
 }]
+
+# get required dates as both datetime objects and formatted DD-MM-YYYY strings
+today = datetime.now(timezone.utc)
+yesterday = today - timedelta(days=1)
+two_days_ago = today - timedelta(days=2)
+tomorrow = today + timedelta(days=1)
+formatted_today = datetime.strftime(today, "%d-%m-%YYYY")[:-3]
+formatted_yesterday = datetime.strftime(yesterday, "%d-%m-%YYYY")[:-3]
+formatted_two_days_ago = datetime.strftime(two_days_ago, "%d-%m-%YYYY")[:-3]
+formatted_tomorrow = datetime.strftime(tomorrow, "%d-%m-%YYYY")[:-3]
 
 
 # convert dates from format provided by src (YYYY-MM-DD)
@@ -358,11 +372,23 @@ def getCategories(base_url, game_id):
         print(f"Failed to retrieve data {response.status_code}")
 
 
-def writeToJSON(runners_limit):
-    runners = getCategoryRunners(base, mb_id, any_id, runners_limit, any_1p_var)
-    # outputs data to json file idk how it works lol
-    with open("runnerData.json", "w") as final:
-        json.dump(runners, final, indent=2, default=lambda x: list(x) if isinstance(x, tuple) else str(x))
+# write all data to a json file
+def writeToJSON(data, filename):
+    # idk how this works lol
+    with open(filename, "w") as final:
+        json.dump(data, final, indent=2, default=lambda x: list(x) if isinstance(x, tuple) else str(x))
 
 
-writeToJSON(150)
+def getAllData(runners_limit):
+    runners = getCategoryRunners(base, mb_id, any_id, runners_limit, any_1p_var) # grab all data
+    writeToJSON(runners, backup_url) # create backup file in case date ones break
+
+    # change oldest file to newest and update data
+    try:
+        os.rename(f"{formatted_two_days_ago}-data.json", f"{formatted_tomorrow}-data.json")
+        writeToJSON(runners, f"{formatted_tomorrow}-data.json")
+    except:
+        print("Failed to rename or write to old data")
+
+
+getAllData(150)
