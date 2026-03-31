@@ -1,22 +1,17 @@
 const trickjumpText = document.getElementById("trickjumpName");
 const trickjumpDifficultyText = document.getElementById("trickjumpDifficulty");
 
+
+const restrictions = [
+    "Relaxless", "MWless", "TTless", "Spinless"
+]
+
 const jumpVariant = [
     "", "", "", "",
     "True", "Truer", "Truest",
     "Vault",
     "Left", "Lefter", "Right", "Righter",
     "Reverse", "Upper"
-];
-
-const jumpType = [
-    "Dram", "Mard", "Gordon Dramsay", "Yellow Dram",
-    "Leap", "Gap", "Crossing", 
-    "Overpass", "Bypass", "Impasse", 
-    "Ascent", "Descent",
-    "Evader", "Hopper", "Escape",
-    "Beans", "Roll", "Assault",
-    "Legend", "God", "Impossible"
 ];
 
 const kingdoms = [
@@ -72,11 +67,22 @@ const entities = [
     "Mummy", "Dragon", "Pokio", "Ogre", "Lakitu", "Jizo", "Bullet", "Glydon", "Taxi"
 ]
 
+const jumpType = [
+    "Dram", "Mard", "Gordon Dramsay", "Yellow Dram",
+    "Leap", "Gap", "Crossing", 
+    "Overpass", "Bypass", "Impasse", 
+    "Ascent", "Descent",
+    "Evader", "Hopper", "Escape",
+    "Beans", "Roll", "Assault",
+    "Legend", "God", "Impossible"
+];
+
 const difficulties = [
     "Beginner", "Intermediate", "Advanced", "Expert", "Master",
     "Low Elite", "Mid Elite", "High Elite", "Insanity", "God", "Hell"
 ]
 
+let restriction;
 let variant;
 let type;
 let kingdom;
@@ -92,6 +98,7 @@ function generateTrickjump(){
 
     trickjumpName = "";
 
+    restriction = restrictions[Math.floor(Math.random() * restrictions.length)];
     variant = jumpVariant[Math.floor(Math.random() * jumpVariant.length)];
     type = jumpType[Math.floor(Math.random() * jumpType.length)];
     kingdom = kingdoms[Math.floor(Math.random() * kingdoms.length)];
@@ -102,29 +109,39 @@ function generateTrickjump(){
 
     difficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
 
+    // 1 in 10 chance of having a restriction
+    if(Math.floor(Math.random()*10 + 1) === 1){
+        trickjumpName += `${restriction} `;
+    }
 
-    trickjumpName += `${variant} `;
+    trickjumpName += `${variant} `; // always has a variant
 
     // 1 in 8 chance of having a kingdom
     if(Math.floor(Math.random()*8 + 1) === 1){
         trickjumpName += `${kingdom} `;
     }
 
-    trickjumpName += `${adjective} `;
-    trickjumpName += `${noun1} `;
+    trickjumpName += `${adjective} `; // always has an adjective
+    trickjumpName += `${noun1} `; // always has at least one noun
 
     // 1 in 4 chance of having a second noun
     if(Math.floor(Math.random()*4 + 1) === 1){
         trickjumpName += `${noun2} `;
     }
+
     // 1 in 6 chance of having an entity
     if (Math.floor(Math.random()*6 + 1) === 1){
         trickjumpName += `${entity} `;
     }
 
-    trickjumpName += `${type} `;
+    trickjumpName += `${type} `; // always has a jump type
+
+    // 1 in 10 chance of being full landing
+    if (Math.floor(Math.random()*6 + 1) === 1){
+        trickjumpName += `Full Landing `;
+    }
 
 
-    trickjumpText.textContent = trickjumpName;
-    trickjumpDifficultyText.textContent = `Difficulty: ${difficulty}`;
+    trickjumpText.innerHTML = `${trickjumpName}`;
+    trickjumpDifficultyText.innerHTML = `Difficulty: ${difficulty}`;
 }
