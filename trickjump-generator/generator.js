@@ -107,8 +107,8 @@ function generateTrickjump(){
 
     difficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
 
-    // 1 in 10 chance of having a restriction
-    if(Math.floor(Math.random()*10 + 1) === 1){
+    // 1 in 15 chance of having a restriction
+    if(Math.floor(Math.random()*15 + 1) === 1){
         trickjumpName += `${restriction} `;
     }
 
@@ -134,8 +134,8 @@ function generateTrickjump(){
 
     trickjumpName += `${type} `; // always has a jump type
 
-    // 1 in 10 chance of being full landing
-    if (Math.floor(Math.random()*10 + 1) === 1){
+    // 1 in 20 chance of being full landing
+    if (Math.floor(Math.random()*20 + 1) === 1){
         trickjumpName += `Full Landing `;
     }
 
