@@ -108,10 +108,10 @@ function generateTrickjump(){
 
 
     if(noun1 === "Great Wall of" || noun1 === "Great Canal of"){
-        noun1 += nouns[Math.floor(Math.random() * nouns.length)];
+        noun1 += ` ${nouns[Math.floor(Math.random() * nouns.length)]}`;
     }
     if(noun2 === "Great Wall of" || noun2 === "Great Canal of"){
-        noun2 += nouns[Math.floor(Math.random() * nouns.length)];
+        noun2 += ` ${nouns[Math.floor(Math.random() * nouns.length)]}`;
     }
 
 
