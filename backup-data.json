@@ -1700,7 +1700,7 @@
     "console": "Switch 2"
   },
   {
-    "name": "ganon",
+    "name": "twilightskies",
     "id": "v8lzw24x",
     "country": [
       "us",
@@ -1708,7 +1708,7 @@
       "US",
       "aN"
     ],
-    "name_colour": "#C279E5",
+    "name_colour": "#44BBEE",
     "best_mb_placement": [
       12,
       "vdooqjod"
@@ -1718,8 +1718,8 @@
       "jdz8olgd"
     ],
     "most_recent_run": "2026-01-02",
-    "twitch_handle": "ganon",
-    "twitter_handle": "ganonTV",
+    "twitch_handle": "twilightskies",
+    "twitter_handle": "twilightskiez",
     "profile_picture": "https://www.speedrun.com/static/user/v8lzw24x/image?v=9e530e2",
     "pb": 3557,
     "console": "Switch 1"
@@ -3114,7 +3114,7 @@
       "vdooqjod"
     ],
     "best_ce_placement": [
-      5,
+      6,
       "wk6oz5rk"
     ],
     "most_recent_run": "2024-08-19",
@@ -3339,7 +3339,7 @@
       "w20w1lzd"
     ],
     "best_ce_placement": [
-      20,
+      21,
       "wk6oz5rk"
     ],
     "most_recent_run": "2024-07-11",
