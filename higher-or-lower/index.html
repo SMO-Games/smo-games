@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Higher or Lower</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="icon.png">
+</head>
+<body>
+
+    <div class="split left" id="leftOption" >
+        <div class="centered">
+            <h1 id="leftMoonName" class="moonName">Across the Mysterious Clouds</h1>
+            <div class="holBtns" id="leftBtns">
+                <button onclick=clickHigher("left")>More Popular</button>
+                <br>
+                <button onclick=clickLower("left")>Less Popular</button>
+            </div>
+            <div class="moonStats" id="leftMoonStats">
+                <p id="leftMoonRanking" class="rankingText"><mark>14th</mark></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="split right" id="rightOption">
+        <div class="centered">
+            <h1 id="rightMoonName" class="moonName">Loose-Tile Crackdown</h1>
+            <div class="holBtns" id="rightBtns">
+                <button onclick=clickHigher("right")>More Popular</button>
+                <br>
+                <button onclick=clickLower("right")>Less Popular</button>
+            </div>
+            <div class="moonStats" id="rightMoonStats">
+                <p id="rightMoonRanking" class="rankingText"><mark>20th</mark></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="center score" id="scoreBox">
+        <p id="currentScore">Score: 0</p>
+        <p id="highScore">N/A</p>
+    </div>
+
+    <script src="higher-or-lower.js"></script>
+</body>
+</html>

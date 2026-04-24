@@ -1,0 +1,209 @@
+body{
+    background-color: rgb(56, 64, 71);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    overflow-wrap: anywhere;
+    margin: 0px;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.center{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.score{
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 10px;
+    border: 5px rgb(230, 214, 0) solid;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.correct{
+    animation: correctAnswer 400ms forwards;
+}
+.incorrect{
+    animation: incorrectAnswer 400ms forwards;
+}
+
+
+button{
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: rgb(255, 255, 255);
+    background-color: rgb(185, 0, 158);
+    border: 3px solid black;
+    border-radius: 20px;
+    margin-top: 5px;
+    margin-right: 5px;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+button:hover{
+    background-color: rgb(158, 0, 134);
+}
+button:active{
+    background-color: rgb(122, 0, 104);
+}
+
+.moonName{
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 10px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    animation: fade-in 400ms forwards;
+}
+
+.holBtns{
+    animation: fade-in 400ms forwards;
+}
+#leftBtns{
+
+}
+#rightBtns{
+
+}
+
+.moonStats mark{
+    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    font-size: 3.5rem;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.split {
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Control the left side */
+.left {
+    left: 0;
+    background-blend-mode: darken; 
+    background-position: 50%;
+    animation: undimImage 200ms forwards;
+}
+.left:hover{
+    animation: dimImage 200ms forwards;
+}
+
+/* Control the right side */
+.right {
+    right: 0;
+    background-blend-mode: darken; 
+    background-position: 50%;
+    animation: undimImage 200ms forwards;
+}
+.right:hover{
+    animation: dimImage 200ms forwards;
+}
+
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+
+@keyframes correctAnswer{
+    100%{
+        border: 10px rgb(36, 201, 14) solid;
+        background-color: rgba(12, 65, 5, 0.8);
+    }
+}
+@keyframes incorrectAnswer{
+    100%{
+        border: 10px rgb(255, 0, 0) solid;
+        background-color: rgba(58, 0, 0, 0.8);
+    }
+}
+
+@keyframes dimImage{
+    0%{
+        background-color: rgba(0, 0, 0, 0);
+    }
+    100%{
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+}
+@keyframes undimImage{
+    0%{
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    100%{
+        background-color: rgba(0, 0, 0, 0);
+    }
+}
+
+@keyframes slide-up{
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}
+@keyframes fade-in{
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes fade-out{
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@keyframes green-text{
+    100% {
+        color:rgb(36, 201, 14);
+    }
+}
+
+.slide-up-class{
+    animation: slide-up 400ms forwards;
+}
+.fade-in-class{
+    animation: fade-in 400ms forwards;
+}
+.fade-out-class{
+    animation: fade-out 400ms forwards;
+}
+.green-text-class{
+    animation: green-text 400ms forwards;
+}
