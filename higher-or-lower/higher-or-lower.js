@@ -364,12 +364,12 @@ function nextRound(side){
     }
     if(side === "right"){
         getRandomLeftMoon(false);
-        showRanking("right");
+        //showRanking("right");
         showButtons("left");
     }
     else if(side === "left"){
         getRandomRightMoon();
-        showRanking("left");
+        //showRanking("left");
         showButtons("right");
     }
 }
@@ -447,26 +447,25 @@ function clickLower(side){
 
 function showRanking(side){
     tempButtons = document.getElementById(`${side}Btns`);
-    tempMoonStats = document.getElementById(`${side}MoonStats`);
+    tempMoonStats = document.getElementById(`${side}MoonRanking`);
     tempButtons.style.display = "none";
-    tempMoonStats.style.display = "initial";
-
-    tempButtons.classList.add("fade-out-class");
-    tempMoonStats.classList.add("fade-in-class");
-    tempButtons.classList.remove("fade-out-class");
-    tempMoonStats.classList.remove("fade-in-class");
-
+    document.getElementById(`${side}MoonStats`).style.display = "initial";
+    // animate ranking appearance
+    tempMoonStats.classList.add("slide-up-class");
+    setTimeout(() => {
+        tempMoonStats.classList.remove("slide-up-class");
+    }, 400);
 }
 function showButtons(side){
     tempButtons = document.getElementById(`${side}Btns`);
     tempMoonStats = document.getElementById(`${side}MoonStats`);
     tempButtons.style.display = "initial";
     tempMoonStats.style.display = "none";
-
+    // animate button appearance
     tempButtons.classList.add("fade-in-class");
-    tempMoonStats.classList.add("fade-out-class");
-    tempButtons.classList.remove("fade-in-class");
-    tempMoonStats.classList.remove("fade-out-class");
+    setTimeout(() => {
+        tempButtons.classList.remove("fade-in-class");
+    }, 400);
 }
 
 

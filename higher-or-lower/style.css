@@ -224,6 +224,7 @@ button:active{
 }
 #gameOverDialogue p{
     color: yellow;
+    font-weight: bold;
 }
 
 /* info dialogue styling */
