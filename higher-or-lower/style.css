@@ -209,12 +209,10 @@ button:active{
 }
 
 
+/* game over dialogue styling */
 #gameOverDialogue{
     padding: 0;
     color: white;
-}
-#gameOverDialogue h3{
-    margin-bottom: 0px;
 }
 #gameOverDialogue[open]{
     animation: slide-up 500ms forwards;
@@ -223,7 +221,20 @@ button:active{
     animation: fade-in 500ms forwards;
 }
 
+/* info dialogue styling */
+#infoDialogue{
+    padding: 0;
+    color: white;
+}
+#infoDialogue[open]{
+    animation: slide-up 500ms forwards;
+}
+#infoDialogue[open]::backdrop{
+    animation: fade-in 500ms forwards;
+}
 
+
+/*formatting for all dialogues and exit button*/
 #exitDialogue{
     font-weight: bold;
     font-size: 2.5rem;
@@ -241,13 +252,11 @@ button:active{
     color: rgb(184, 184, 184);
 }
 
-
-dialog .gameOverWrapper{
+dialog .wrapper{
     padding: 16px;
     justify-content: center;
     align-items: center;
-    text-align: center;
-    
+    text-align: center;  
 }
 dialog{
     /* remove scrollbar */
@@ -259,4 +268,21 @@ dialog{
 /* remove scrollbar */
 dialog::-webkit-scrollbar {
     display: none;
+}
+
+#homeBtns{
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+a{
+    color: rgb(255, 0, 216);
+    font-weight: bold;
+}
+a:hover{
+    color: rgb(182, 0, 155);
+}
+a:active{
+    color: rgb(150, 0, 127);
 }

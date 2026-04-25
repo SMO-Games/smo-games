@@ -263,6 +263,9 @@ const gameOverDialogue = document.getElementById("gameOverDialogue");
 const gameOverWrapper = document.querySelector(".gameOverWrapper");
 const playAgainHomeBtn = document.getElementById("playAgainHomeBtn");
 const finalScoreText = document.getElementById("finalScoreText");
+// for info
+const infoDialogue = document.getElementById("infoDialogue");
+const infoWrapper = document.querySelector(".infoWrapper");
 
 
 // return number with suffix
@@ -502,7 +505,8 @@ function playAgain(){
 }
 
 
-// open / close more dialogue
+// game over dialogue
+// open / close game over dialogue
 function openGameOverDialogue(){
     gameOverDialogue.showModal();
 }
@@ -513,6 +517,20 @@ function exitGameOverDialogue(){
 gameOverDialogue.addEventListener("click", (e) => {
     if(!gameOverWrapper.contains(e.target)){
         exitGameOverDialogue();
+    }
+});
+// info dialogue
+// open / close info dialogue
+function openInfoDialogue(){
+    infoDialogue.showModal();
+}
+function exitInfoDialogue(){
+    infoDialogue.close();
+}
+// lets you close the dialogue by clicking anywhere outside of it
+infoDialogue.addEventListener("click", (e) => {
+    if(!infoWrapper.contains(e.target)){
+        exitInfoDialogue();
     }
 });
 
