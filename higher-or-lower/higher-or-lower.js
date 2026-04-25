@@ -256,6 +256,13 @@ let tempButtons;
 let tempMoonStats;
 // for rounds
 const roundTimeDelay = 4000;
+// for cookies
+const statsExpiryDate = new Date(2145916800 * 1000)
+// for game over
+const gameOverDialogue = document.getElementById("gameOverDialogue");
+const gameOverWrapper = document.querySelector(".gameOverWrapper");
+const playAgainHomeBtn = document.getElementById("playAgainHomeBtn");
+const finalScoreText = document.getElementById("finalScoreText");
 
 
 // return number with suffix
@@ -272,6 +279,37 @@ function getSuffix(i) {
         return i + "rd";
     }
     return i + "th";
+}
+
+
+// create a cookie
+function setCookie(name, value, expiry){
+    document.cookie = `${name}=${value}; expires=${expiry.toUTCString()}; path=/`
+}
+// returns value of given cookie
+function getCookie(name){
+    const cDecoded = decodeURIComponent(document.cookie); // grabs whole cookie
+    const cArray = cDecoded.split("; "); // splits into array
+    let result = null;
+    // check each cookie for a match
+    cArray.forEach(element => {
+        if(element.indexOf(name) === 0){ // if element starts with desired cookie name
+            result = element.substring(name.length + 1) // store value in result by going from index after name=
+        }
+    })
+    return result;
+}
+
+
+function displayHighScore(){
+    highScore = getCookie("highScore");
+    if(highScore === null){
+        setCookie("highScore", 0, statsExpiryDate)
+        highScoreText.innerHTML = "Best: 0";
+    }
+    else{
+        highScoreText.innerHTML = `Best: ${highScore}`;
+    }
 }
 
 
@@ -335,9 +373,13 @@ function nextRound(side){
 
 
 function gameOver(){
-    getBothRandomMoons();
-    showRanking("left");
-    showButtons("right");
+    // update high score internally, don't display yet
+    if(currentScore > getCookie("highScore")){
+        setCookie("highScore", currentScore, statsExpiryDate);
+    }
+    finalScoreText.innerHTML = currentScore;
+    openGameOverDialogue();
+    playAgainHomeBtn.style.display = "initial";
 }
 
 
@@ -354,8 +396,6 @@ function correctGuess(side){
     }, roundTimeDelay);
 }
 function incorrectGuess(side){
-    currentScore = 0;
-    currentScoreText.textContent = `Score: 0`;
     scoreBox.classList.add("incorrect");
     setTimeout(() => {
         scoreBox.classList.remove("incorrect");
@@ -447,12 +487,40 @@ function runCountdown(textbox, start, end){
 }
 
 
+function playAgain(){
+    exitGameOverDialogue();
+    // prepare scores
+    console.log("test");
+    currentScore = 0;
+    displayHighScore();
+    // start new game
+    getBothRandomMoons();
+    showRanking("left");
+    showButtons("right");
+    // remove play again button
+    playAgainHomeBtn.style.display = "none";
+}
 
+
+// open / close more dialogue
+function openGameOverDialogue(){
+    gameOverDialogue.showModal();
+}
+function exitGameOverDialogue(){
+    gameOverDialogue.close();
+}
+// lets you close the dialogue by clicking anywhere outside of it
+gameOverDialogue.addEventListener("click", (e) => {
+    if(!gameOverWrapper.contains(e.target)){
+        exitGameOverDialogue();
+    }
+});
 
 
 getBothRandomMoons();
 showRanking("left");
 showButtons("right");
 
+displayHighScore();
 
-//runCountdown(leftMoonRankingText, moons.length, leftMoon[0])
+playAgainHomeBtn.style.display = "none";

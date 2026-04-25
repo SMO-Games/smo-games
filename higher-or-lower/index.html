@@ -7,6 +7,7 @@
     <title>Higher or Lower</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
@@ -38,10 +39,30 @@
         </div>
     </div>
 
-    <div class="center score" id="scoreBox">
-        <p id="currentScore">Score: 0</p>
-        <p id="highScore">N/A</p>
+    <div class="center">
+        <div id="scoreBox" class="score">
+            <p id="currentScore">Score: 0</p>
+            <p id="highScore">N/A</p>
+        </div>
+        <div> 
+            <button id="playAgainHomeBtn" onclick=playAgain()>Play Again</button>
+        </div>
     </div>
+    
+
+    <dialog id="gameOverDialogue">
+        <div class="gameOverWrapper">
+            <button type="button" id="exitDialogue" class="dialogueBtn" onclick=exitGameOverDialogue()><i class="fa-solid fa-x"></i></button>
+            <br>
+            <h1>Game Over</h1>
+            <h2>Your Score:</h2>
+            <h2 id="finalScoreText">3</h2>
+            <br>
+            <p>Thanks for playing Higher or Lower!</p>
+            <br>
+            <button id="playAgainBtn" onclick=playAgain()>Play Again</button>
+        </div>
+    </dialog>
 
     <script src="higher-or-lower.js"></script>
 </body>
