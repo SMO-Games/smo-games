@@ -222,9 +222,8 @@ const moons = [
     [222, 'Atop a Propeller Pillar', '', 'https://mario.wiki.gallery/images/a/a0/SMO_Lost_Moon_1.png'],
     [223, 'Hanging Between Buildings', '', 'https://mario.wiki.gallery/images/d/dd/SMO_Metro_Moon_67.png'], //
     [224, "Light the Far-Off Lanterns", '', 'https://mario.wiki.gallery/images/b/b4/SMO_Luncheon_Moon_32.png'],
+    [224, "Ocean-Bottom Maze: Treasure", '', 'https://mario.wiki.gallery/images/b/b4/SMO_Seaside_Moon_8.png']
 ]
-
-
 
 
 let availableMoons = moons;
@@ -364,12 +363,10 @@ function nextRound(side){
     }
     if(side === "right"){
         getRandomLeftMoon(false);
-        //showRanking("right");
         showButtons("left");
     }
     else if(side === "left"){
         getRandomRightMoon();
-        //showRanking("left");
         showButtons("right");
     }
 }
