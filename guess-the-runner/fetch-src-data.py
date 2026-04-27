@@ -385,8 +385,8 @@ def getAllData(runners_limit):
 
     # change oldest file to newest and update data
     try:
-        os.rename(f"{formatted_two_days_ago}-data.json", f"{formatted_tomorrow}-data.json")
-        writeToJSON(runners, f"{formatted_tomorrow}-data.json")
+        os.rename(f"guess-the-runner/{formatted_two_days_ago}-data.json", f"guess-the-runner/{formatted_tomorrow}-data.json")
+        writeToJSON(runners, f"guess-the-runner/{formatted_tomorrow}-data.json")
     except:
         print("Failed to rename or write to old data")
 
