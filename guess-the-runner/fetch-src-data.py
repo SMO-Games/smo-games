@@ -22,7 +22,7 @@ any_2p_var = "var-68km3w4l=013vz03l"
 mincapsany_id = "xd1gxz7d"
 
 # opens dataframe for sovereignty of nation
-sovereignty_df = pd.read_csv("countries.csv")
+sovereignty_df = pd.read_csv("guess-the-runner/countries.csv")
 
 # runners not to be included
 runner_exclusions = [{
