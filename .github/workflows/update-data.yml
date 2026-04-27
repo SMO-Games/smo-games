@@ -28,7 +28,7 @@ jobs:
     - name: Install all necessary packages
       run: pip install datetime requests pandas
     - name: Fetch current runner data
-      run: python3 fetch-src-data.py
+      run: python3 guess-the-runner/fetch-src-data.py
     - name: Commit and push any changes
       run: |-
         git config user.name "Automated"
