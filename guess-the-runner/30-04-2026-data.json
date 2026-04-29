@@ -617,7 +617,7 @@
       2,
       "7kj3wl42"
     ],
-    "most_recent_run": "2026-03-10",
+    "most_recent_run": "2026-03-20",
     "twitch_handle": null,
     "twitter_handle": null,
     "profile_picture": "https://www.speedrun.com/static/user/o86lymp8/image?v=f72e246",
@@ -1092,7 +1092,7 @@
       3,
       "rklr3lrk"
     ],
-    "most_recent_run": "2026-03-15",
+    "most_recent_run": "2026-03-27",
     "twitch_handle": "LapisSR_",
     "twitter_handle": null,
     "profile_picture": "https://www.speedrun.com/static/user/86vvv75j/image?v=8ebfec4",
@@ -1639,7 +1639,7 @@
       "w20w1lzd"
     ],
     "best_ce_placement": [
-      59,
+      60,
       "7kjp3wzk"
     ],
     "most_recent_run": "2021-05-21",
@@ -2300,15 +2300,15 @@
     "console": "Switch 2"
   },
   {
-    "name": "BurritoSheriffSR",
+    "name": "Aymen",
     "id": "pj04g74x",
     "country": [
-      null,
-      null,
-      null,
-      null
+      "lu",
+      "Luxembourg",
+      "LU",
+      "EU"
     ],
-    "name_colour": "#FFFFFF",
+    "name_colour": "#44BBEE",
     "best_mb_placement": [
       72,
       "vdooo3yd"
@@ -2964,7 +2964,7 @@
       "wk6719ed"
     ],
     "best_ce_placement": [
-      55,
+      56,
       "7kjp3wzk"
     ],
     "most_recent_run": "2024-06-24",
@@ -3214,7 +3214,7 @@
       "w20w1lzd"
     ],
     "best_ce_placement": [
-      130,
+      131,
       "7kjp3wzk"
     ],
     "most_recent_run": "2025-11-14",
